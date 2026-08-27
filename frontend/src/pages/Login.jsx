@@ -25,7 +25,7 @@ export default function Login() {
     }
 
     login(data.token, data.userId);
-    navigate(`/user/${data.userId}`);
+    navigate(`/user/${data.userId}/dashboard`);
   }
 
   return (
