@@ -1,6 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
+import WeeklyDistanceChart from "../components/WeeklyDistanceChart.jsx";
+import HeartRateChart from "../components/HeartRateChart.jsx";
+import WeeklyGoalChart from "../components/WeeklyGoalChart.jsx";
 
 export default function Dashboard() {
   const { token, userId } = useContext(AuthContext);
@@ -43,15 +46,24 @@ export default function Dashboard() {
 
   return (
     <section>
+      <section style={{ display: "flex", gap: "40px", marginTop: "40px" }}>
+        <WeeklyDistanceChart />
+        <HeartRateChart />
+        <WeeklyGoalChart />
+      </section>
+
       <h1>
         Dashboard de {dashboardData.profile.firstName} {dashboardData.profile.lastName}
       </h1>
+
       <p>Membre depuis le {dashboardData.profile.createdAt}</p>
       <p>Distance totale parcourue : {dashboardData.profile.totalDistance} km</p>
 
       <h2>Statistiques hebdomadaires</h2>
+
+      <p>Du {dashboardData.weeklyStats.startDate} au {dashboardData.weeklyStats.endDate}</p>
+
       <ul>
-        <p>Du {dashboardData.weeklyStats.startDate} au {dashboardData.weeklyStats.endDate}</p>
         <li>Objectif : {dashboardData.weeklyStats.goal} courses</li>
         <li>Courses réalisées : {dashboardData.weeklyStats.runsCompleted}</li>
         <li>Durée totale : {dashboardData.weeklyStats.totalDuration} min</li>
