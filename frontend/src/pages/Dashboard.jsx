@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
+import { getDashboard } from "../services/api.js";
 import WeeklyDistanceChart from "../components/WeeklyDistanceChart.jsx";
 import HeartRateChart from "../components/HeartRateChart.jsx";
 import WeeklyGoalChart from "../components/WeeklyGoalChart.jsx";
@@ -24,11 +25,7 @@ export default function Dashboard() {
 
     async function fetchDashboard() {
       try {
-        const response = await fetch(`http://localhost:8000/api/user/${userId}/dashboard`);
-        if (!response.ok) {
-          throw new Error("Erreur lors du chargement du dashboard");
-        }
-        const data = await response.json();
+        const data = await getDashboard(userId, token);
         setDashboardData(data);
       } catch (error) {
         console.error(error);
@@ -47,9 +44,9 @@ export default function Dashboard() {
   return (
     <section>
       <section style={{ display: "flex", gap: "40px", marginTop: "40px" }}>
-        <WeeklyDistanceChart />
-        <HeartRateChart />
-        <WeeklyGoalChart />
+        <WeeklyDistanceChart data={dashboardData.charts.weeklyDistance} />
+        <HeartRateChart data={dashboardData.charts.heartRate} />
+        <WeeklyGoalChart weeklyStats={dashboardData.weeklyStats} />
       </section>
 
       <h1>

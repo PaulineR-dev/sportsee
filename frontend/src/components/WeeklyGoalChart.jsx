@@ -1,13 +1,23 @@
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
-const data = [
-  { name: "Réalisées", value: 4 },
-  { name: "Restantes", value: 2 },
-];
-
 const COLORS = ["#4E6AF3", "#A8C3FF"];
 
-const WeeklyGoalChart = () => {
+export default function WeeklyGoalChart({ weeklyStats }) {
+  console.log("WEEKLY GOAL DATA =", weeklyStats);
+
+  if (!weeklyStats) {
+    return <p>Aucune donnée d'objectif disponible.</p>;
+  }
+
+  const completed = weeklyStats.runsCompleted;
+  const goal = weeklyStats.goal;
+  const remaining = goal - completed;
+
+  const data = [
+    { name: "Réalisées", value: completed },
+    { name: "Restantes", value: remaining },
+  ];
+
   return (
     <div
       style={{
@@ -19,7 +29,10 @@ const WeeklyGoalChart = () => {
         padding: "20px",
       }}
     >
-      <h2 style={{ color: "#4E6AF3", marginBottom: "5px" }}>x4 sur objectif de 6</h2>
+      <h2 style={{ color: "#4E6AF3", marginBottom: "5px" }}>
+        x{completed} sur objectif de {goal}
+      </h2>
+
       <p style={{ color: "#777", marginBottom: "20px" }}>
         Courses hebdomadaires réalisées
       </p>
@@ -47,10 +60,9 @@ const WeeklyGoalChart = () => {
       </PieChart>
 
       <div style={{ marginTop: "10px", color: "#4E6AF3" }}>
-        <strong>4 réalisées</strong> / <span style={{ color: "#A8C3FF" }}>2 restantes</span>
+        <strong>{completed} réalisées</strong> /{" "}
+        <span style={{ color: "#A8C3FF" }}>{remaining} restantes</span>
       </div>
     </div>
   );
-};
-
-export default WeeklyGoalChart;
+}

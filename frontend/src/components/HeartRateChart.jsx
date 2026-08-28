@@ -9,17 +9,13 @@ import {
   Line
 } from "recharts";
 
-const data = [
-  { day: "Lun", min: 132, max: 185, avg: 163 },
-  { day: "Mar", min: 140, max: 187, avg: 165 },
-  { day: "Mer", min: 135, max: 180, avg: 160 },
-  { day: "Jeu", min: 130, max: 175, avg: 158 },
-  { day: "Ven", min: 145, max: 182, avg: 166 },
-  { day: "Sam", min: 138, max: 170, avg: 155 },
-  { day: "Dim", min: 133, max: 177, avg: 162 },
-];
+export default function HeartRateChart({ data }) {
+  console.log("HEART RATE DATA =", data);
 
-const HeartRateChart = () => {
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return <p>Aucune donnée de fréquence cardiaque disponible.</p>;
+  }
+
   return (
     <BarChart
       style={{
@@ -49,6 +45,4 @@ const HeartRateChart = () => {
       />
     </BarChart>
   );
-};
-
-export default HeartRateChart;
+}

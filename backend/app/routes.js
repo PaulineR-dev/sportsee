@@ -118,4 +118,46 @@ router.get("/api/user-activity", authenticateToken, (req, res) => {
   return res.json(sortedSessions);
 });
 
+/**
+ * GET /api/user/:id/dashboard
+ */
+const {
+  getLastFourWeeks,
+  getWeeklyHeartRate,
+  getCurrentWeekStats,
+  getRestDays
+} = require("./utils/statsUtils");
+
+router.get("/api/user/:id/dashboard", authenticateToken, (req, res) => {
+  const userId = req.params.id;
+  const user = getUserById(userId);
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  const runs = user.runningData;
+
+  const profile = {
+    firstName: user.userInfos.firstName,
+    lastName: user.userInfos.lastName,
+    createdAt: user.userInfos.createdAt,
+    totalDistance: runs.reduce((sum, r) => sum + r.distance, 0)
+  };
+
+  const weeklyStats = getCurrentWeekStats(runs, user.weeklyGoal);
+  const lastFourWeeks = getLastFourWeeks(runs);
+  const weeklyHeartRate = getWeeklyHeartRate(runs);
+  const restDays = getRestDays(runs);
+
+  res.json({
+    profile,
+    weeklyStats,
+    runningData: runs,
+    lastFourWeeks,
+    weeklyHeartRate,
+    restDays
+  });
+});
+
 module.exports = router;
