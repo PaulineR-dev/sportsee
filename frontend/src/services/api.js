@@ -1,8 +1,6 @@
-// src/services/api.js
-
 const API_URL = "http://localhost:8000/api";
 
-// --- AUTHENTIFICATION ---
+// --- LOGIN ---
 export async function loginUser(username, password) {
   const response = await fetch(`${API_URL}/login`, {
     method: "POST",
@@ -10,74 +8,27 @@ export async function loginUser(username, password) {
     body: JSON.stringify({ username, password }),
   });
 
-  if (!response.ok) {
-    throw new Error("Identifiants incorrects");
-  }
-
-  return response.json();
+  if (!response.ok) throw new Error("Identifiants incorrects");
+  return response.json(); // { token, userId }
 }
 
-// --- PROFIL ---
-export async function getUser(id, token) {
-  const response = await fetch(`${API_URL}/user/${id}`, {
+// --- USER INFO ---
+export async function getUserInfo(token) {
+  const response = await fetch(`${API_URL}/user-info`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-  if (!response.ok) {
-    throw new Error("Impossible de charger l'utilisateur");
-  }
-
-  return response.json();
+  if (!response.ok) throw new Error("Impossible de charger les infos utilisateur");
+  return response.json(); // { profile, statistics }
 }
 
-// --- ACTIVITÉS ---
-export async function getActivity(id, token) {
-  const response = await fetch(`${API_URL}/user/${id}/activity`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+// --- USER ACTIVITY ---
+export async function getUserActivity(token, startWeek, endWeek) {
+  const response = await fetch(
+    `${API_URL}/user-activity?startWeek=${startWeek}&endWeek=${endWeek}`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
 
-  if (!response.ok) {
-    throw new Error("Impossible de charger l'activité");
-  }
-
-  return response.json();
-}
-
-// --- SESSIONS MOYENNES ---
-export async function getAverageSessions(id, token) {
-  const response = await fetch(`${API_URL}/user/${id}/average-sessions`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  if (!response.ok) {
-    throw new Error("Impossible de charger les sessions moyennes");
-  }
-
-  return response.json();
-}
-
-// --- PERFORMANCES ---
-export async function getPerformance(id, token) {
-  const response = await fetch(`${API_URL}/user/${id}/performance`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  if (!response.ok) {
-    throw new Error("Impossible de charger les performances");
-  }
-
-  return response.json();
-}
-
-// --- DASHBOARD COMPLET ---
-export async function getDashboard(id, token) {
-  const response = await fetch(`${API_URL}/user/${id}/dashboard`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  if (!response.ok) {
-    throw new Error("Impossible de charger le dashboard");
-  }
-
-  return response.json();
+  if (!response.ok) throw new Error("Impossible de charger l'activité");
+  return response.json(); // array of sessions
 }

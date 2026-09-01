@@ -41,7 +41,7 @@ export default function Login() {
           <h2 className="login-title">Se connecter</h2>
 
           <form onSubmit={handleSubmit} className="login-form">
-            <label>Adresse email</label>
+            <label>Nom d'utilisateur</label>
             <input
               type="text"
               placeholder="Nom d'utilisateur"

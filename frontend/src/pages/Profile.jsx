@@ -1,12 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
+import { getUserInfo } from "../services/api.js";
 
 export default function Profile() {
   const { token, userId } = useContext(AuthContext);
   const { id } = useParams();
   const navigate = useNavigate();
-  const [profileData, setProfileData] = useState(null);
+
+  const [profile, setProfile] = useState(null);
+  const [statistics, setStatistics] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!token) {
@@ -20,17 +24,22 @@ export default function Profile() {
     }
 
     async function fetchProfile() {
-      const response = await fetch(`http://localhost:8000/api/user/${userId}/profile`);
-      const data = await response.json();
-      setProfileData(data);
+      try {
+        const data = await getUserInfo(token);
+        setProfile(data.profile);
+        setStatistics(data.statistics);
+      } catch (error) {
+        console.error("Erreur profil :", error);
+      } finally {
+        setLoading(false);
+      }
     }
 
     fetchProfile();
   }, [token, id, userId, navigate]);
 
-  if (!profileData) return <p>Chargement du profil...</p>;
-
-  const { profile, statistics } = profileData;
+  if (loading) return <p>Chargement du profil...</p>;
+  if (!profile || !statistics) return <p>Impossible de charger le profil.</p>;
 
   const hours = Math.floor(statistics.totalDuration / 60);
   const minutes = statistics.totalDuration % 60;
@@ -45,7 +54,6 @@ export default function Profile() {
       <div>
         <h2>Votre profil</h2>
         <p>Âge : {profile.age}</p>
-        <p>Genre : {profile.gender}</p>
         <p>Taille : {profile.height} cm</p>
         <p>Poids : {profile.weight} kg</p>
       </div>
@@ -55,10 +63,8 @@ export default function Profile() {
         <p>Depuis le {profile.createdAt}</p>
         <ul>
           <li>Temps total couru : {hours}h {minutes}min</li>
-          <li>Calories brûlées : {statistics.totalCalories} cal</li>
           <li>Distance totale parcourue : {statistics.totalDistance} km</li>
-          <li>Nombre de jours de repos : {statistics.restDays} jours</li>
-          <li>Nombre de sessions : {statistics.totalSessions} sessions</li>
+          <li>Nombre de sessions : {statistics.totalSessions}</li>
         </ul>
       </div>
     </section>
