@@ -11,32 +11,12 @@ import WeeklyDistanceChart from "../components/WeeklyDistanceChart.jsx";
 import HeartRateChart from "../components/HeartRateChart.jsx";
 import WeeklyGoalChart from "../components/WeeklyGoalChart.jsx";
 
-// --- TRANSFORMATIONS BASÉES SUR LE BACKEND ---
-function buildHeartRate(sessions) {
-  return sessions.map((s) => ({
-    day: s.date,
-    min: s.heartRate.min,
-    max: s.heartRate.max,
-    avg: s.heartRate.average
-  }));
-}
-
-function buildWeeklyDistance(sessions) {
-  return sessions.map((s, index) => ({
-    week: `Semaine ${index + 1}`,
-    km: s.distance,
-    date: s.date
-  }));
-}
-
-function buildWeeklyStats(profile, statistics, sessions) {
-  return {
-    goal: profile.weeklyGoal,
-    runsCompleted: sessions.length,
-    totalDistance: statistics.totalDistance,
-    totalDuration: statistics.totalDuration
-  };
-}
+// IMPORT DES TRANSFORMATIONS
+import {
+  buildWeeklyDistance,
+  buildHeartRate,
+  buildWeeklyStats
+} from "../utils/transformData.js";
 
 export default function Dashboard() {
   const { token, userId } = useContext(AuthContext);
@@ -80,7 +60,7 @@ export default function Dashboard() {
         // Transformations pour les graphiques
         setWeeklyDistance(buildWeeklyDistance(activityData));
         setHeartRate(buildHeartRate(activityData));
-        setWeeklyStats(buildWeeklyStats(userInfo.profile, userInfo.statistics, activityData));
+        setWeeklyStats(buildWeeklyStats(userInfo.statistics, activityData));
 
       } catch (error) {
         console.error("Erreur dashboard :", error);
@@ -112,16 +92,6 @@ export default function Dashboard() {
         <HeartRateChart data={heartRate} />
         <WeeklyGoalChart weeklyStats={weeklyStats} />
       </section>
-
-      <h2>Activité du mois</h2>
-
-      <ul>
-        {sessions.map((s, index) => (
-          <li key={index}>
-            {s.date} — {s.distance} km — {s.duration} min
-          </li>
-        ))}
-      </ul>
 
       <button onClick={() => navigate(`/user/${userId}`)}>
         Voir le profil
