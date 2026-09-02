@@ -78,7 +78,7 @@ export default function HeartRateChart({ data }) {
     setWindowStart(Math.min(windowStart + windowSize, maxStart));
   };
 
-  // Axe horizonatal avec les jours de la semaine
+  // Axe horizontal avec les jours de la semaine
   const dayLabels = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
   const formattedData = visibleData.map((d, i) => ({
     ...d,
