@@ -3,6 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { getUserInfo } from "../services/api.js";
 
+import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
+
 export default function Profile() {
   const { token, userId } = useContext(AuthContext);
   const { id } = useParams();
@@ -45,28 +48,34 @@ export default function Profile() {
   const minutes = statistics.totalDuration % 60;
 
   return (
-    <section>
-      <div>
-        <h1>{profile.firstName} {profile.lastName}</h1>
-        <p>Membre depuis le {profile.createdAt}</p>
-      </div>
+    <>
+      <Header />
 
-      <div>
-        <h2>Votre profil</h2>
-        <p>Âge : {profile.age}</p>
-        <p>Taille : {profile.height} cm</p>
-        <p>Poids : {profile.weight} kg</p>
-      </div>
+      <section style={{ padding: "40px" }}>
+        <div>
+          <h1>{profile.firstName} {profile.lastName}</h1>
+          <p>Membre depuis le {profile.createdAt}</p>
+        </div>
 
-      <div>
-        <h2>Vos statistiques</h2>
-        <p>Depuis le {profile.createdAt}</p>
-        <ul>
-          <li>Temps total couru : {hours}h {minutes}min</li>
-          <li>Distance totale parcourue : {statistics.totalDistance} km</li>
-          <li>Nombre de sessions : {statistics.totalSessions}</li>
-        </ul>
-      </div>
-    </section>
+        <div style={{ marginTop: "30px" }}>
+          <h2>Votre profil</h2>
+          <p>Âge : {profile.age}</p>
+          <p>Taille : {profile.height} cm</p>
+          <p>Poids : {profile.weight} kg</p>
+        </div>
+
+        <div style={{ marginTop: "30px" }}>
+          <h2>Vos statistiques</h2>
+          <p>Depuis le {profile.createdAt}</p>
+          <ul>
+            <li>Temps total couru : {hours}h {minutes}min</li>
+            <li>Distance totale parcourue : {statistics.totalDistance} km</li>
+            <li>Nombre de sessions : {statistics.totalSessions}</li>
+          </ul>
+        </div>
+      </section>
+
+      <Footer />
+    </>
   );
 }

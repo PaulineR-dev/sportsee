@@ -10,6 +10,8 @@ import {
 import WeeklyDistanceChart from "../components/WeeklyDistanceChart.jsx";
 import HeartRateChart from "../components/HeartRateChart.jsx";
 import WeeklyGoalChart from "../components/WeeklyGoalChart.jsx";
+import Footer from "../components/Footer.jsx";
+import Header from "../components/Header.jsx";
 
 // IMPORT DES TRANSFORMATIONS
 import {
@@ -76,26 +78,32 @@ export default function Dashboard() {
   if (!profile || !statistics || !sessions) return <p>Impossible de charger les données.</p>;
 
   return (
-    <section>
-      <h1>
-        Dashboard de {profile.firstName} {profile.lastName}
-      </h1>
+    <>
+      <Header /> 
 
-      <p>Membre depuis le {profile.createdAt}</p>
-      <p>Distance totale parcourue : {statistics.totalDistance} km</p>
-      <p>Nombre de sessions : {statistics.totalSessions}</p>
-      <p>Durée totale : {statistics.totalDuration} min</p>
+      <section>
+        <h1>
+          Dashboard de {profile.firstName} {profile.lastName}
+        </h1>
 
-      {/* --- GRAPHIQUES --- */}
-      <section style={{ display: "flex", gap: "40px", marginTop: "40px" }}>
-        <WeeklyDistanceChart data={weeklyDistance} />
-        <HeartRateChart data={heartRate} />
-        <WeeklyGoalChart weeklyStats={weeklyStats} />
+        <p>Membre depuis le {profile.createdAt}</p>
+        <p>Distance totale parcourue : {statistics.totalDistance} km</p>
+        <p>Nombre de sessions : {statistics.totalSessions}</p>
+        <p>Durée totale : {statistics.totalDuration} min</p>
+
+        {/* --- GRAPHIQUES --- */}
+        <section style={{ display: "flex", gap: "40px", marginTop: "40px" }}>
+          <WeeklyDistanceChart data={weeklyDistance} />
+          <HeartRateChart data={heartRate} />
+          <WeeklyGoalChart weeklyStats={weeklyStats} />
+        </section>
+
+        <button onClick={() => navigate(`/user/${userId}`)}>
+          Voir le profil
+        </button>
       </section>
 
-      <button onClick={() => navigate(`/user/${userId}`)}>
-        Voir le profil
-      </button>
-    </section>
+      <Footer />
+    </>
   );
 }
