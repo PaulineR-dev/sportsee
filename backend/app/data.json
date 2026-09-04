@@ -1,7 +1,6 @@
 [
 {
     "id": "user123",
-    "weeklyGoal": 2,
   "userInfos": {
     "firstName": "Sophie",
     "lastName": "Martin",
@@ -9,8 +8,9 @@
     "gender": "female",
     "profilePicture": "http://localhost:8000/images/sophie.jpg",
     "height": 165,
-      "weight": 60,
-      "createdAt": "2025-01-01"
+    "weight": 60,
+    "createdAt": "2025-01-01",
+    "weeklyGoal": 2
   },
     "username": "sophiemartin",
     "password": "password123",
@@ -367,7 +367,6 @@
   },
   {
     "id": "user789",
-    "goal": 3,
     "userInfos": {
       "firstName": "Emma",
       "lastName": "Leroy",
@@ -376,7 +375,8 @@
       "height": 170,
       "weight": 62,
       "profilePicture": "http://localhost:8000/images/emma.jpg",
-      "createdAt": "2025-01-01"
+      "createdAt": "2025-01-01",
+      "weeklyGoal": 3
     },
     "username": "emmaleroy",
     "password": "password789",
@@ -995,13 +995,13 @@
     "userInfos": {
       "firstName": "Marc",
       "lastName": "Dubois",
-      "goal": 2,
       "age": 45,
       "gender": "male",
       "height": 180,
       "weight": 85,
       "profilePicture": "http://localhost:8000/images/marc.jpg",
-      "createdAt": "2025-01-01"
+      "createdAt": "2025-01-01",
+      "weeklyGoal": 2
     },
     "username": "marcdubois",
     "password": "password456",

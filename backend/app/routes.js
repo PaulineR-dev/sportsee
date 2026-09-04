@@ -78,6 +78,8 @@ router.get("/api/user-info", authenticateToken, (req, res) => {
       totalSessions,
       totalDuration,
     },
+
+    weeklyGoal: user.userInfos.weeklyGoal
   });
 });
 

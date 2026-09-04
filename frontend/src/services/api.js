@@ -24,7 +24,8 @@ export async function getUserInfo(token) {
 
   return {
     profile: raw.profile,
-    statistics: raw.statistics
+    statistics: raw.statistics,
+    weeklyGoal: raw.weeklyGoal
   };
 }
 

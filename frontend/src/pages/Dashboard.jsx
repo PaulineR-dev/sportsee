@@ -21,21 +21,6 @@ import {
 
 import "../styles/Dashboard.css";
 
-// Détermine l'objectif hebdomadaire selon l'utilisateur : TEMPORAIRE A REVOIR
-function resolveWeeklyGoal(userId) {
-  switch (userId) {
-    case "user123":
-      return 2;
-    case "user789":
-      return 3;
-    case "user456":
-      return 2;
-    default:
-      return 0;
-  }
-}
-
-// Formatage des dates en français
 function formatDateFR(date) {
   return date.toLocaleDateString("fr-FR", {
     day: "2-digit",
@@ -44,7 +29,6 @@ function formatDateFR(date) {
   });
 }
 
-// Calcule le lundi et le dimanche de la semaine courante
 function getCurrentWeekBounds() {
   const today = new Date();
   const dayNum = (today.getDay() + 6) % 7; // 0 = lundi
@@ -73,24 +57,20 @@ export default function Dashboard() {
 
   const [loading, setLoading] = useState(true);
 
-  // Dates calculées localement pour la semaine courante
   const { monday, sunday } = getCurrentWeekBounds();
 
   useEffect(() => {
 
-    // Vérifie l'authentification
     if (!token) {
       navigate("/");
       return;
     }
 
-    // Empêche l'accès à un autre dashboard
     if (id !== userId) {
       navigate(`/user/${userId}/dashboard`);
       return;
     }
 
-    // Charge les données du dashboard
     async function fetchDashboard() {
       try {
         const userInfo = await getUserInfo(token);
@@ -98,11 +78,10 @@ export default function Dashboard() {
         setProfile(userInfo.profile);
         setStatistics(userInfo.statistics);
 
-        const startDate = "2025-01-01";
+        const startDate = userInfo.profile.createdAt;
         const endDate = new Date().toISOString().split("T")[0];
 
         const activityData = await getUserActivity(token, startDate, endDate);
-
         setSessions(activityData);
 
         const dist = buildWeeklyDistance(activityData);
@@ -111,8 +90,10 @@ export default function Dashboard() {
         const hr = buildHeartRate(activityData);
         setHeartRate(hr);
 
+        const resolvedGoal = userInfo.weeklyGoal ?? 0;
+
         const stats = buildWeeklyStats(
-          { weeklyGoal: resolveWeeklyGoal(userId) },
+          { weeklyGoal: resolvedGoal },
           activityData
         );
 
@@ -186,7 +167,6 @@ export default function Dashboard() {
 
           <h2 className="week-summary-title">Cette semaine</h2>
 
-          {/* Dates calculées localement */}
           <p className="week-summary-dates">
             Du {formatDateFR(monday)} au {formatDateFR(sunday)}
           </p>

@@ -81,7 +81,7 @@ export default function WeeklyDistanceChart({ data }) {
   return (
     <div className="chart-wrapper">
 
-      {/* --- Titre + période + FLÈCHES AUTOUR DE LA DATE --- */}
+      {/* --- Titre + période + flèches --- */}
       <div
         style={{
           display: "flex",

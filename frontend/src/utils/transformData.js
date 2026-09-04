@@ -1,30 +1,4 @@
 // -------------------------------------------------------------
-// Récupère l'objectif hebdomadaire selon les données disponibles
-// -------------------------------------------------------------
-export function extractWeeklyGoal(data) {
-  if (!data) return null;
-
-  // Cas 1 : weeklyGoal à la racine
-  if (typeof data.weeklyGoal === "number") {
-    return data.weeklyGoal;
-  }
-
-  // Cas 2 : goal à la racine
-  if (typeof data.goal === "number") {
-    return data.goal;
-  }
-
-  // Cas 3 : goal dans userInfos
-  if (data.userInfos && typeof data.userInfos.goal === "number") {
-    return data.userInfos.goal;
-  }
-
-  // Rien trouvé
-  return null;
-}
-
-
-// -------------------------------------------------------------
 // Transforme les sessions en données pour le graphique de distance hebdomadaire
 // -------------------------------------------------------------
 export function buildWeeklyDistance(sessions) {
@@ -125,7 +99,7 @@ export function buildHeartRate(sessions) {
 export function buildWeeklyStats(statistics, sessions) {
   if (!statistics) {
     return {
-      goal: null,
+      weeklyGoal: null,
       runsCompleted: 0,
       totalDistance: 0,
       totalDuration: 0,
@@ -136,7 +110,7 @@ export function buildWeeklyStats(statistics, sessions) {
 
   if (!sessions || sessions.length === 0) {
     return {
-      goal: statistics.weeklyGoal ?? null,
+      weeklyGoal: statistics.weeklyGoal ?? null,
       runsCompleted: 0,
       totalDistance: 0,
       totalDuration: 0,
@@ -162,7 +136,7 @@ export function buildWeeklyStats(statistics, sessions) {
   const totalDuration = weekSessions.reduce((sum, s) => sum + s.duration, 0);
 
   return {
-    goal: statistics.weeklyGoal ?? null,
+    weeklyGoal: statistics.weeklyGoal ?? null,
     runsCompleted,
     totalDistance,
     totalDuration,

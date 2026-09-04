@@ -10,7 +10,9 @@ export default function WeeklyGoalChart({ weeklyStats }) {
   if (!weeklyStats) return <p>Aucune donnée d'objectif disponible.</p>;
 
   const completed = weeklyStats.runsCompleted ?? 0;
-  const goal = weeklyStats.goal ?? 0;
+
+  const goal = weeklyStats.weeklyGoal ?? 0;
+
   const remaining = Math.max(goal - completed, 0);
 
   const data = [
@@ -101,10 +103,6 @@ export default function WeeklyGoalChart({ weeklyStats }) {
         </Pie>
       </PieChart>
 
-      {/* PHRASE DE TEST AVEC LE GOAL */}
-      <div style={{ marginTop: "20px", fontSize: "14px", color: "#333" }}>
-        Ceci est un test d’objectif de <strong>{goal}</strong> courses.
-      </div>
     </div>
   );
 }
