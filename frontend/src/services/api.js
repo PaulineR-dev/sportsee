@@ -9,7 +9,7 @@ export async function loginUser(username, password) {
   });
 
   if (!response.ok) throw new Error("Identifiants incorrects");
-  return response.json(); // { token, userId }
+  return response.json();
 }
 
 // --- USER INFO ---
@@ -19,7 +19,13 @@ export async function getUserInfo(token) {
   });
 
   if (!response.ok) throw new Error("Impossible de charger les infos utilisateur");
-  return response.json(); // { profile, statistics }
+
+  const raw = await response.json();
+
+  return {
+    profile: raw.profile,
+    statistics: raw.statistics
+  };
 }
 
 // --- USER ACTIVITY ---
@@ -30,5 +36,5 @@ export async function getUserActivity(token, startWeek, endWeek) {
   );
 
   if (!response.ok) throw new Error("Impossible de charger l'activité");
-  return response.json(); // array of sessions
+  return response.json();
 }

@@ -29,8 +29,15 @@ export default function Profile() {
     async function fetchProfile() {
       try {
         const data = await getUserInfo(token);
+
+        const weeklyGoal = resolveWeeklyGoal(userId);
+
         setProfile(data.profile);
-        setStatistics(data.statistics);
+        setStatistics({
+          ...data.statistics,
+          weeklyGoal
+        });
+
       } catch (error) {
         console.error("Erreur profil :", error);
       } finally {
@@ -71,6 +78,7 @@ export default function Profile() {
             <li>Temps total couru : {hours}h {minutes}min</li>
             <li>Distance totale parcourue : {statistics.totalDistance} km</li>
             <li>Nombre de sessions : {statistics.totalSessions}</li>
+            <li> Objectif de la semaine : {statistics.weeklyGoal} courses</li>
           </ul>
         </div>
       </section>

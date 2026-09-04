@@ -6,10 +6,11 @@ const COLORS = {
 };
 
 export default function WeeklyGoalChart({ weeklyStats }) {
+
   if (!weeklyStats) return <p>Aucune donnée d'objectif disponible.</p>;
 
-  const completed = weeklyStats.runsCompleted;
-  const goal = weeklyStats.goal;
+  const completed = weeklyStats.runsCompleted ?? 0;
+  const goal = weeklyStats.goal ?? 0;
   const remaining = Math.max(goal - completed, 0);
 
   const data = [
@@ -20,7 +21,6 @@ export default function WeeklyGoalChart({ weeklyStats }) {
   const labelCompleted = completed < 2 ? "réalisée" : "réalisées";
   const labelRemaining = remaining < 2 ? "restante" : "restantes";
 
-  // LABELS DÉCALÉS VERS L’EXTÉRIEUR
   const renderCustomLabel = ({
     cx,
     cy,
@@ -30,11 +30,8 @@ export default function WeeklyGoalChart({ weeklyStats }) {
     index
   }) => {
     const RADIAN = Math.PI / 180;
+    const radius = outerRadius + 20;
 
-    // distance du centre pour placer le label
-    const radius = outerRadius + 20; 
-
-    // coordonnées du label
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
@@ -48,10 +45,7 @@ export default function WeeklyGoalChart({ weeklyStats }) {
 
     return (
       <g>
-        {/* Petit rond */}
         <circle cx={x - 14} cy={y} r={6} fill={item.color} />
-
-        {/* Texte en noir */}
         <text
           x={x + 2}
           y={y + 4}
@@ -106,6 +100,11 @@ export default function WeeklyGoalChart({ weeklyStats }) {
           ))}
         </Pie>
       </PieChart>
+
+      {/* PHRASE DE TEST AVEC LE GOAL */}
+      <div style={{ marginTop: "20px", fontSize: "14px", color: "#333" }}>
+        Ceci est un test d’objectif de <strong>{goal}</strong> courses.
+      </div>
     </div>
   );
 }

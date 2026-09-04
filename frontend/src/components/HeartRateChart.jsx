@@ -16,74 +16,61 @@ export default function HeartRateChart({ data }) {
     return <p>Aucune donnée de fréquence cardiaque disponible.</p>;
   }
 
-  // Afficher la dernière semaine enregistrée
+  // --- 7 dernières valeurs ---
+  const windowSize = 7;
   const [windowStart, setWindowStart] = useState(
-    Math.max(data.length - 7, 0)
+    Math.max(data.length - windowSize, 0)
   );
 
-  const windowSize = 7;
   const windowEnd = windowStart + windowSize;
   const visibleData = data.slice(windowStart, windowEnd);
 
-  // Fonction de formatage identique à WeeklyDistanceChart
+  // --- Dates affichées en haut ---
   function formatDate(dateStr) {
-    if (!dateStr) return "—";
-
-    let date = new Date(dateStr);
-
-    if (isNaN(date)) {
-      const parts = dateStr.split("/");
-      if (parts.length === 3) {
-        const [d, m, y] = parts;
-        date = new Date(`${y}-${m}-${d}`);
-      }
-    }
-
-    if (isNaN(date)) return "—";
-
-    return date.toLocaleDateString("fr-FR", {
+    const d = new Date(dateStr);
+    if (isNaN(d)) return "—";
+    return d.toLocaleDateString("fr-FR", {
       day: "numeric",
       month: "short"
     });
   }
 
-  // Dates correctes
   const periodStart = formatDate(visibleData[0]?.day);
   const periodEnd = formatDate(visibleData[visibleData.length - 1]?.day);
 
-  // Moyenne BPM
+  // --- Labels dynamiques basés sur la vraie date ---
+  const formattedData = visibleData.map((d) => {
+    const dateObj = new Date(d.day);
+    const label = dateObj.toLocaleDateString("fr-FR", { weekday: "short" });
+    return {
+      ...d,
+      dayLabel: label.charAt(0).toUpperCase() + label.slice(1)
+    };
+  });
+
+  // --- Moyenne BPM ---
   const averageBPM = useMemo(() => {
     return Math.round(
       visibleData.reduce((sum, d) => sum + d.avg, 0) / visibleData.length
     );
   }, [visibleData]);
 
-  // Axe vertical avec valeurs dynamiques
+  // --- Axe vertical dynamique ---
   const rawMax = Math.max(...visibleData.map((d) => d.max));
   const yMax = rawMax + 2;
   const ticks = [130, 145, 160, yMax];
 
-  // Navigation
+  // --- Navigation ---
   const canGoPrev = windowStart > 0;
-  const canGoNext = windowStart + windowSize < data.length;
+  const canGoNext = windowEnd < data.length;
 
   const handlePrev = () => {
-    if (!canGoPrev) return;
-    setWindowStart(Math.max(windowStart - windowSize, 0));
+    if (canGoPrev) setWindowStart(windowStart - 1);
   };
 
   const handleNext = () => {
-    if (!canGoNext) return;
-    const maxStart = Math.max(data.length - windowSize, 0);
-    setWindowStart(Math.min(windowStart + windowSize, maxStart));
+    if (canGoNext) setWindowStart(windowStart + 1);
   };
-
-  // Axe horizontal avec les jours de la semaine
-  const dayLabels = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
-  const formattedData = visibleData.map((d, i) => ({
-    ...d,
-    day: dayLabels[i] || d.day
-  }));
 
   return (
     <div
@@ -161,7 +148,7 @@ export default function HeartRateChart({ data }) {
         margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
       >
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey="day" tick={{ fill: "#777" }} />
+        <XAxis dataKey="dayLabel" tick={{ fill: "#777" }} />
         <YAxis tick={{ fill: "#777" }} domain={[130, yMax]} ticks={ticks} />
         <Tooltip />
         <Bar dataKey="min" name="Min BPM" fill="#FDCACB" radius={[10, 10, 0, 0]} />

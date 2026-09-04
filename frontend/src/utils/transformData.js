@@ -1,46 +1,52 @@
-// Transforme les sessions en données pour le graphique de distance hebdomadaire
-export function buildWeeklyDistance(sessions) {
-  return sessions.map((session, index) => ({
-    week: `S${index + 1}`,
-    km: session.distance,
-    date: session.date
-  }));
-}
+// -------------------------------------------------------------
+// Récupère l'objectif hebdomadaire selon les données disponibles
+// -------------------------------------------------------------
+export function extractWeeklyGoal(data) {
+  if (!data) return null;
 
-// Transforme les sessions en données pour le graphique de fréquence cardiaque
-export function buildHeartRate(sessions) {
-  return sessions.map((session) => ({
-    day: session.date,
-    min: session.heartRate.min,
-    max: session.heartRate.max,
-    avg: session.heartRate.average
-  }));
-}
-
-// Construit les statistiques de la dernière semaine enregistrée (semaine calendrier)
-export function buildWeeklyStats(statistics, sessions) {
-  if (!sessions || sessions.length === 0) {
-    return {
-      goal: statistics.weeklyGoal || 6,
-      runsCompleted: 0,
-      totalDistance: 0,
-      totalDuration: 0,
-      startDate: "",
-      endDate: ""
-    };
+  // Cas 1 : weeklyGoal à la racine
+  if (typeof data.weeklyGoal === "number") {
+    return data.weeklyGoal;
   }
 
-  // Regrouper par semaine ISO (année + numéro de semaine)
+  // Cas 2 : goal à la racine
+  if (typeof data.goal === "number") {
+    return data.goal;
+  }
+
+  // Cas 3 : goal dans userInfos
+  if (data.userInfos && typeof data.userInfos.goal === "number") {
+    return data.userInfos.goal;
+  }
+
+  // Rien trouvé
+  return null;
+}
+
+
+// -------------------------------------------------------------
+// Transforme les sessions en données pour le graphique de distance hebdomadaire
+// -------------------------------------------------------------
+export function buildWeeklyDistance(sessions) {
+  if (!sessions) return [];
+
+  const sessionArray = Array.isArray(sessions)
+    ? sessions
+    : Object.values(sessions);
+
+  if (sessionArray.length === 0) return [];
+
   const weeks = {};
 
-  sessions.forEach((s) => {
+  sessionArray.forEach((s) => {
     const d = new Date(s.date);
 
-    // calcul clé de semaine ISO
     const dayNum = (d.getDay() + 6) % 7; // 0 = lundi
     d.setDate(d.getDate() - dayNum + 3);
+
     const weekYear = d.getFullYear();
     const week1 = new Date(weekYear, 0, 4);
+
     const week =
       1 +
       Math.round(
@@ -50,39 +56,117 @@ export function buildWeeklyStats(statistics, sessions) {
     const key = `${weekYear}-W${week}`;
 
     if (!weeks[key]) {
-      weeks[key] = [];
+      weeks[key] = {
+        isoWeek: key,
+        km: 0,
+        dates: []
+      };
     }
-    weeks[key].push(s);
+
+    weeks[key].km += s.distance;
+    weeks[key].dates.push(s.date);
   });
 
-  // Dernière semaine
-  const keys = Object.keys(weeks).sort();
-  const lastKey = keys[keys.length - 1];
-  const lastWeekSessions = weeks[lastKey];
+  // Ajoute la semaine actuelle si absente
+  const today = new Date();
+  const dayNumToday = (today.getDay() + 6) % 7;
+  today.setDate(today.getDate() - dayNumToday + 3);
 
-  const runsCompleted = lastWeekSessions.length;
-  const totalDistance = lastWeekSessions.reduce(
-    (sum, s) => sum + s.distance,
-    0
-  );
-  const totalDuration = lastWeekSessions.reduce(
-    (sum, s) => sum + s.duration,
-    0
+  const currentYear = today.getFullYear();
+  const week1Current = new Date(currentYear, 0, 4);
+
+  const currentWeek =
+    1 +
+    Math.round(
+      ((today - week1Current) / 86400000 - 3 + ((week1Current.getDay() + 6) % 7)) / 7
+    );
+
+  const currentKey = `${currentYear}-W${currentWeek}`;
+
+  if (!weeks[currentKey]) {
+    weeks[currentKey] = {
+      isoWeek: currentKey,
+      km: 0,
+      dates: [today.toISOString().split("T")[0]]
+    };
+  }
+
+  const weeklyArray = Object.values(weeks).sort(
+    (a, b) => new Date(a.dates[0]) - new Date(b.dates[0])
   );
 
-  // Dates min / max de cette semaine
-  const sortedWeek = [...lastWeekSessions].sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
-  );
-  const startDate = sortedWeek[0].date;
-  const endDate = sortedWeek[sortedWeek.length - 1].date;
+  return weeklyArray.map((w, index) => ({
+    week: `S${index + 1}`,
+    km: w.km,
+    date: w.dates[0],
+    isoWeek: w.isoWeek
+  }));
+}
+
+
+// -------------------------------------------------------------
+// Transforme les sessions en données pour le graphique de fréquence cardiaque
+// -------------------------------------------------------------
+export function buildHeartRate(sessions) {
+  if (!sessions) return [];
+
+  return sessions.map((session) => ({
+    day: session.date,
+    min: session.heartRate.min,
+    max: session.heartRate.max,
+    avg: session.heartRate.average
+  }));
+}
+
+
+// -------------------------------------------------------------
+// Construit les statistiques de la semaine en cours (lundi → aujourd’hui)
+// -------------------------------------------------------------
+export function buildWeeklyStats(statistics, sessions) {
+  if (!statistics) {
+    return {
+      goal: null,
+      runsCompleted: 0,
+      totalDistance: 0,
+      totalDuration: 0,
+      startDate: "",
+      endDate: ""
+    };
+  }
+
+  if (!sessions || sessions.length === 0) {
+    return {
+      goal: statistics.weeklyGoal ?? null,
+      runsCompleted: 0,
+      totalDistance: 0,
+      totalDuration: 0,
+      startDate: "",
+      endDate: ""
+    };
+  }
+
+  // Lundi de la semaine courante
+  const today = new Date();
+  const dayNum = (today.getDay() + 6) % 7;
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - dayNum);
+
+  // Sessions de la semaine courante
+  const weekSessions = sessions.filter((s) => {
+    const d = new Date(s.date);
+    return d >= monday && d <= today;
+  });
+
+  const runsCompleted = weekSessions.length;
+  const totalDistance = weekSessions.reduce((sum, s) => sum + s.distance, 0);
+  const totalDuration = weekSessions.reduce((sum, s) => sum + s.duration, 0);
 
   return {
-    goal: statistics.weeklyGoal || 6,
+    goal: statistics.weeklyGoal ?? null,
     runsCompleted,
     totalDistance,
     totalDuration,
-    startDate,
-    endDate
+    startDate: monday.toISOString().split("T")[0],
+    endDate: today.toISOString().split("T")[0]
   };
 }
