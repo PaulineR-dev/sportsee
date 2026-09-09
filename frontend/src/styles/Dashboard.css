@@ -2,14 +2,12 @@
 .dashboard-top {
   width: 90%;
   max-width: 1052px;
-  height: 81px;
+  height: 181px;
 
   display: flex;
   justify-content: space-between;
-  align-items: center;
-
-  padding: 32px 52px;
   margin: 0 auto;
+  margin-top: 108px;
 
   border-radius: 20px;
 
@@ -29,7 +27,9 @@
 .dashboard-top-left {
   display: flex;
   align-items: flex-start;
-  gap: 20px;
+  gap: 38px;
+  margin-top: 32px;
+  margin-left: 52px;
 }
 
 .dashboard-profile-pic {
@@ -48,10 +48,11 @@
   font-size: 22px;
   color: #111111;
   text-align: start;
+  padding-top: 34.5px;
 }
 
 .dashboard-user-info p {
-  margin: 5px 0 0 0;
+  margin: 4px 0 0 0;
   font-family: Inter;
   font-weight: 400;
   font-size: 14px;
@@ -61,7 +62,6 @@
 /* --- DROITE : label + bloc bleu côte à côte --- */
 .dashboard-top-right {
   display: flex;
-  align-items: center;
   gap: 16px;
 }
 
@@ -70,6 +70,7 @@
   font-weight: 400;
   font-size: 14px;
   color: #707070;
+  margin-top: 82px;
 }
 
 .dashboard-top-right-box {
@@ -85,6 +86,8 @@
   color: white;
   font-size: 22px;
   font-weight: bold;
+  margin-right: 52px;
+  margin-top: 45.5px;
 }
 
 /* --- SECTION : VOS DERNIÈRES PERFORMANCES --- */

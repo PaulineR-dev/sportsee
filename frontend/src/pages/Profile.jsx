@@ -6,6 +6,15 @@ import { getUserInfo } from "../services/api.js";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 
+function formatMemberDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+}
+
 export default function Profile() {
   const { token, userId } = useContext(AuthContext);
   const { id } = useParams();
@@ -22,7 +31,7 @@ export default function Profile() {
     }
 
     if (id !== userId) {
-      navigate(`/user/${userId}`);
+      navigate(`/user/${userId}/profile`);
       return;
     }
 
@@ -30,7 +39,10 @@ export default function Profile() {
       try {
         const data = await getUserInfo(token);
 
-        const weeklyGoal = resolveWeeklyGoal(userId);
+        const weeklyGoal =
+          data.statistics?.weeklyGoal ??
+          data.profile?.goal ??
+          0;
 
         setProfile(data.profile);
         setStatistics({
@@ -51,8 +63,9 @@ export default function Profile() {
   if (loading) return <p>Chargement du profil...</p>;
   if (!profile || !statistics) return <p>Impossible de charger le profil.</p>;
 
-  const hours = Math.floor(statistics.totalDuration / 60);
-  const minutes = statistics.totalDuration % 60;
+  const totalDuration = statistics.totalDuration ?? 0;
+  const hours = Math.floor(totalDuration / 60);
+  const minutes = totalDuration % 60;
 
   return (
     <>
@@ -61,7 +74,7 @@ export default function Profile() {
       <section style={{ padding: "40px" }}>
         <div>
           <h1>{profile.firstName} {profile.lastName}</h1>
-          <p>Membre depuis le {profile.createdAt}</p>
+          <p>Membre depuis le {formatMemberDate(profile.createdAt)}</p>
         </div>
 
         <div style={{ marginTop: "30px" }}>
@@ -73,12 +86,12 @@ export default function Profile() {
 
         <div style={{ marginTop: "30px" }}>
           <h2>Vos statistiques</h2>
-          <p>Depuis le {profile.createdAt}</p>
+          <p>Depuis le {formatMemberDate(profile.createdAt)}</p>
           <ul>
             <li>Temps total couru : {hours}h {minutes}min</li>
             <li>Distance totale parcourue : {statistics.totalDistance} km</li>
             <li>Nombre de sessions : {statistics.totalSessions}</li>
-            <li> Objectif de la semaine : {statistics.weeklyGoal} courses</li>
+            <li>Objectif de la semaine : {statistics.weeklyGoal} courses</li>
           </ul>
         </div>
       </section>

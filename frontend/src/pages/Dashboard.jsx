@@ -29,6 +29,22 @@ function formatDateFR(date) {
   });
 }
 
+// Fonction ajoutée uniquement pour le header
+function formatMemberDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+}
+
+// Fonction pour calculer la distance totale depuis created_at
+function computeTotalDistanceFromSessions(sessions) {
+  if (!sessions || sessions.length === 0) return 0;
+  return sessions.reduce((sum, s) => sum + (s.distance || 0), 0);
+}
+
 function getCurrentWeekBounds() {
   const today = new Date();
   const dayNum = (today.getDay() + 6) % 7; // 0 = lundi
@@ -54,6 +70,8 @@ export default function Dashboard() {
   const [weeklyDistance, setWeeklyDistance] = useState(null);
   const [heartRate, setHeartRate] = useState(null);
   const [weeklyStats, setWeeklyStats] = useState(null);
+
+  const [totalDistanceFromStart, setTotalDistanceFromStart] = useState(0);
 
   const [loading, setLoading] = useState(true);
 
@@ -99,6 +117,10 @@ export default function Dashboard() {
 
         setWeeklyStats(stats);
 
+        // Calcul distance totale depuis created_at
+        const totalDistance = computeTotalDistanceFromSessions(activityData);
+        setTotalDistanceFromStart(totalDistance);
+
       } catch (error) {
         console.log("Erreur lors du chargement du dashboard :", error);
       } finally {
@@ -131,7 +153,7 @@ export default function Dashboard() {
 
             <div className="dashboard-user-info">
               <h2>{profile.firstName} {profile.lastName}</h2>
-              <p>Membre depuis le {profile.createdAt}</p>
+              <p>Membre depuis le {formatMemberDate(profile.createdAt)}</p>
             </div>
           </div>
 
@@ -141,7 +163,7 @@ export default function Dashboard() {
             </span>
 
             <div className="dashboard-top-right-box">
-              {statistics.totalDistance} km
+              {totalDistanceFromStart.toFixed(1)} km
             </div>
           </div>
 
@@ -200,9 +222,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <button onClick={() => navigate(`/user/${userId}`)}>
-          Voir le profil
-        </button>
       </section>
 
       <Footer />
