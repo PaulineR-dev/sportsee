@@ -1,0 +1,59 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 35px;
+  padding-left: 150px;
+  padding-right: 150px;
+  background-color: #F2F3FF;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo {
+  width: 156.97px;
+  height: 23.41px;
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    background-color: #fff;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    font-size: 16px;
+    width: 461px;
+    height: 49px;
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+.header-nav button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: Inter, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  color: #000;
+}
+
+
+.header-separator {
+  width: 1px;
+  height: 17px;
+  background-color: #0B23F4;
+}
+
+#logout-btn {
+  color: #4E6AF3;
+  font-weight: bold;
+}
