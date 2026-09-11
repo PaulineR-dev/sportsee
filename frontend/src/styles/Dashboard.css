@@ -1,26 +1,31 @@
+@keyframes slideUpContent {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 /* --- HEADER DU DASHBOARD --- */
 .dashboard-top {
   width: 90%;
   max-width: 1052px;
   height: 181px;
-
   display: flex;
   justify-content: space-between;
   margin: 0 auto;
   margin-top: 108px;
-
   border-radius: 20px;
-
   background: linear-gradient(
     0deg,
     rgba(255, 255, 255, 0) -8.38%,
     #ffffff 100%
   );
-
   border: none;
   box-shadow: none;
-
-  margin-bottom: 40px;
 }
 
 /* --- GAUCHE : photo + infos --- */
@@ -74,27 +79,36 @@
 }
 
 .dashboard-top-right-box {
-  width: 183px;
+  width: 183.01px;
   height: 90px;
   background: #0B23F4;
   border-radius: 10px;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   color: white;
   font-size: 22px;
-  font-weight: bold;
+  font-family: inter, sans-serif;
   margin-right: 52px;
   margin-top: 45.5px;
+  gap: 19px;
+}
+
+/* Animation appliquée à l’icône + au texte */
+.dashboard-top-right-box > * {
+  animation: slideUpContent 0.6s ease-out forwards;
+}
+
+.dashboard-outline-icon {
+  width: 34.1px;
+  height: 34px;
 }
 
 /* --- SECTION : VOS DERNIÈRES PERFORMANCES --- */
 .dashboard-perf {
   width: 1052px;
   background: #F2F3FF;
-  margin: 40px auto 0 auto;
+  margin: 108px auto 0 auto;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -134,7 +148,6 @@
   justify-content: flex-start;
   align-items: center;
 }
-
 
 /* --- BLOC 2 : HeartRateChart --- */
 .dashboard-perf-block-2 {
@@ -252,15 +265,17 @@
   font-weight: 500;
   font-size: 22px;
   color: #111111;
-  margin-bottom: 10px;
+  text-align: left;
+  margin-bottom: 9px;
 }
 
 .week-summary-dates {
   font-family: Inter;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   color: #707070;
   margin-bottom: 30px;
+  text-align: left;
 }
 
 .week-summary-content {
@@ -284,9 +299,17 @@
 /* BLOC BLANC */
 .week-box {
   width: 572px;
+  height: 103px;
   background: #FFFFFF;
   border-radius: 10px;
-  padding: 20px 30px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-left: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  align-items: flex-start;
 }
 
 /* LABEL */
@@ -295,7 +318,7 @@
   font-weight: 400;
   font-size: 14px;
   color: #707070;
-  margin-bottom: 5px;
+  margin: 0;
 }
 
 /* VALEUR */
@@ -304,6 +327,9 @@
   font-weight: 500;
   font-size: 22px;
   margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
 }
 
 /* UNITÉS */
@@ -312,7 +338,6 @@
   font-weight: 500;
   font-size: 16px;
   color: #B6BDFC;
-  vertical-align: bottom;
 }
 
 .week-box-unit-red {
@@ -320,7 +345,6 @@
   font-weight: 500;
   font-size: 16px;
   color: #FCC1B6;
-  vertical-align: bottom;
 }
 
 /* Couleur de la valeur distance */

@@ -19,6 +19,8 @@ import {
   buildWeeklyStats
 } from "../utils/transformData.js";
 
+import outline from "../assets/outline.png"; // ← AJOUT
+
 import "../styles/Dashboard.css";
 
 function formatDateFR(date) {
@@ -163,7 +165,8 @@ export default function Dashboard() {
             </span>
 
             <div className="dashboard-top-right-box">
-              {totalDistanceFromStart.toFixed(1)} km
+              <img src={outline} alt="" className="dashboard-outline-icon" /> 
+              <p className="dashboard-total-km">{Math.round(totalDistanceFromStart)} km</p>
             </div>
           </div>
 
@@ -203,18 +206,12 @@ export default function Dashboard() {
 
               <div className="week-box">
                 <p className="week-box-label">Durée d'activité</p>
-                <p className="week-box-value">
-                  {weeklyStats.totalDuration}
-                  <span className="week-box-unit-blue">minutes</span>
-                </p>
+                <p className="week-box-value">{weeklyStats.totalDuration}<span className="week-box-unit-blue"> minutes</span></p>
               </div>
 
               <div className="week-box">
                 <p className="week-box-label">Distance</p>
-                <p className="week-box-value">
-                  {weeklyStats.totalDistance.toFixed(1)}
-                  <span className="week-box-unit-red">kilomètres</span>
-                </p>
+                <p className="week-box-value">{weeklyStats.totalDistance.toFixed(1)}<span className="week-box-unit-red"> kilomètres</span></p>
               </div>
 
             </div>
