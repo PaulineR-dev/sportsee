@@ -1,33 +1,22 @@
 import logo2 from "../assets/logo2.png";
+import "../styles/footer.css";
 
 export default function Footer() {
   return (
-    <footer
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "20px 40px",
-        backgroundColor: "#fff",
-        borderTop: "1px solid #eee",
-        fontSize: "14px",
-        color: "#000",
-      }}
-    >
-      <div>©Sportsee&nbsp;&nbsp;Tous droits réservés</div>
+    <footer className="footer">
+      <div className="footer-left">
+        <p>©Sportsee</p>
+        <p>Tous droits réservés</p>
+      </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-        <a href="/conditions" style={{ color: "#000", textDecoration: "none" }}>
-          Conditions générales
-        </a>
-        <a href="/contact" style={{ color: "#000", textDecoration: "none" }}>
-          Contact
-        </a>
+      <div className="footer-right">
+        <a href="/conditions">Conditions générales</a>
+        <a href="/contact">Contact</a>
 
         <img
           src={logo2}
           alt="Logo Sportsee"
-          style={{ width: "20px", height: "20px" }}
+          className="footer-logo"
         />
       </div>
     </footer>
