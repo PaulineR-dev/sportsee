@@ -119,16 +119,21 @@ export function buildWeeklyStats(statistics, sessions) {
     };
   }
 
-  // Lundi de la semaine courante
+  // Trouver le lundi de la semaine actuelle
   const today = new Date();
-  const dayNum = (today.getDay() + 6) % 7;
+  const dayNum = (today.getDay() + 6) % 7; // 0 = lundi
   const monday = new Date(today);
+  monday.setHours(0, 0, 0, 0);
   monday.setDate(today.getDate() - dayNum);
+
+  // Fin = aujourd’hui à 23:59:59
+  const endOfToday = new Date(today);
+  endOfToday.setHours(23, 59, 59, 999);
 
   // Sessions de la semaine courante
   const weekSessions = sessions.filter((s) => {
     const d = new Date(s.date);
-    return d >= monday && d <= today;
+    return d >= monday && d <= endOfToday;
   });
 
   const runsCompleted = weekSessions.length;
