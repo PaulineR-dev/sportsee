@@ -1,18 +1,15 @@
 import { PieChart, Pie, Cell } from "recharts";
 
 const COLORS = {
-  completed: "#4E6AF3",
-  remaining: "#A8C3FF"
+  completed: "#0B23F4",
+  remaining: "#B6BDFC"
 };
 
 export default function WeeklyGoalChart({ weeklyStats }) {
-
   if (!weeklyStats) return <p>Aucune donnée d'objectif disponible.</p>;
 
   const completed = weeklyStats.runsCompleted ?? 0;
-
   const goal = weeklyStats.weeklyGoal ?? 0;
-
   const remaining = Math.max(goal - completed, 0);
 
   const data = [
@@ -20,89 +17,173 @@ export default function WeeklyGoalChart({ weeklyStats }) {
     { name: "Réalisées", value: completed, color: COLORS.completed }
   ];
 
-  const labelCompleted = completed < 2 ? "réalisée" : "réalisées";
-  const labelRemaining = remaining < 2 ? "restante" : "restantes";
-
-  const renderCustomLabel = ({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    index
-  }) => {
-    const RADIAN = Math.PI / 180;
-    const radius = outerRadius + 20;
-
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    const item = data[index];
-    const value = item.value;
-
-    const label =
-      item.name === "Réalisées"
-        ? `${value} ${labelCompleted}`
-        : `${value} ${labelRemaining}`;
-
-    return (
-      <g>
-        <circle cx={x - 14} cy={y} r={6} fill={item.color} />
-        <text
-          x={x + 2}
-          y={y + 4}
-          fill="#000"
-          fontSize="14"
-          textAnchor="start"
-        >
-          {label}
-        </text>
-      </g>
-    );
-  };
-
   return (
     <div
       style={{
-        width: "100%",
-        maxWidth: "300px",
-        textAlign: "center",
-        backgroundColor: "#fff",
+        width: "450px",
+        height: "342px",
+        padding: "16px 38px 32px 38px",
+        boxSizing: "border-box",
         borderRadius: "10px",
-        padding: "20px"
+        backgroundColor: "#fff",
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+        alignItems: "flex-start"
       }}
     >
-      <h2 style={{ color: "#4E6AF3", marginBottom: "5px" }}>
-        x{completed} sur objectif de {goal}
-      </h2>
+      {/* TITRE */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+        
+        {/* Ligne xNb + sur objectif */}
+        <div style={{ display: "flex", alignItems: "flex-end", gap: "6px" }}>
+          <span
+            style={{
+              fontFamily: "Inter",
+              fontWeight: 600,
+              fontSize: "28px",
+              lineHeight: "100%",
+              color: "#0B23F4"
+            }}
+          >
+            x{completed}
+          </span>
 
-      <p style={{ color: "#777", marginBottom: "20px" }}>
-        Courses hebdomadaires réalisées
-      </p>
+          <span
+            style={{
+              fontFamily: "Inter",
+              fontWeight: 500,
+              fontSize: "16px",
+              lineHeight: "100%",
+              color: "#B6BDFC",
+              verticalAlign: "bottom"
+            }}
+          >
+            sur objectif de {goal}
+          </span>
+        </div>
 
-      <PieChart width={250} height={250}>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          innerRadius={70}
-          outerRadius={100}
-          paddingAngle={0}
-          dataKey="value"
-          labelLine={false}
-          label={renderCustomLabel}
+        {/* Texte sous le titre */}
+        <span
+          style={{
+            marginTop: "7px",
+            fontFamily: "Inter",
+            fontWeight: 400,
+            fontSize: "14px",
+            lineHeight: "100%",
+            color: "#707070"
+          }}
         >
-          {data.map((entry, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={entry.color}
-              stroke={entry.color}
-              strokeWidth={2}
-            />
-          ))}
-        </Pie>
-      </PieChart>
+          Courses hebdomadaires réalisées
+        </span>
+      </div>
 
+      {/* DONUT + LÉGENDE AUTOUR */}
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          height: "240px",
+          marginTop: "8px"
+        }}
+      >
+        {/* LÉGENDE EN HAUT À DROITE */}
+        <div
+          style={{
+            position: "absolute",
+            top: "37px",
+            right: "56px",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px"
+          }}
+        >
+          <div
+            style={{
+              width: "6.54px",
+              height: "6.54px",
+              borderRadius: "50%",
+              backgroundColor: COLORS.remaining
+            }}
+          ></div>
+
+          <span
+            style={{
+              fontFamily: "Inter",
+              fontWeight: 400,
+              fontSize: "10px",
+              lineHeight: "100%",
+              color: "#707070"
+            }}
+          >
+            {remaining} restantes
+          </span>
+        </div>
+
+        {/* DONUT CENTRÉ — taille Figma exacte */}
+        <div
+          style={{
+            position: "absolute",
+            top: "13.68px",
+            left: "84.45px"
+          }}
+        >
+          <PieChart width={200} height={200}>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={42}
+              outerRadius={81}
+              paddingAngle={0}
+              dataKey="value"
+              labelLine={false}
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={index}
+                  fill={entry.color}
+                  stroke={entry.color}
+                  strokeWidth={2.45}
+                />
+              ))}
+            </Pie>
+          </PieChart>
+        </div>
+
+        {/* LÉGENDE EN BAS À GAUCHE */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: "38.7px",
+            left: "47px",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px"
+          }}
+        >
+          <div
+            style={{
+              width: "6.54px",
+              height: "6.54px",
+              borderRadius: "50%",
+              backgroundColor: COLORS.completed
+            }}
+          ></div>
+
+          <span
+            style={{
+              fontFamily: "Inter",
+              fontWeight: 400,
+              fontSize: "10px",
+              lineHeight: "100%",
+              color: "#707070"
+            }}
+          >
+            {completed} réalisées
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

@@ -19,7 +19,7 @@ import {
   buildWeeklyStats
 } from "../utils/transformData.js";
 
-import outline from "../assets/outline.png"; // ← AJOUT
+import outline from "../assets/outline.png";
 
 import "../styles/Dashboard.css";
 
