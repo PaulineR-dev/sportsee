@@ -1,0 +1,183 @@
+.profile-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 57px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  margin-top: 108px;
+}
+
+.profile-left {
+  width: 508px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.profile-header {
+  width: 508px;
+  height: 165px;
+  gap: 24px;
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 10px;
+  box-shadow: 0px 4px 84px -40px #9DA7FB66;
+  box-sizing: border-box;
+  padding-left: 32px;
+}
+
+.profile-avatar {
+  width: 104px;
+  height: 117px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0px 4px 84px -40px #9DA7FB66;
+}
+
+.profile-header h1 {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 100%;
+  color: #111111;
+  margin: 0;
+  text-align: start;
+}
+
+.member-date {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  color: #707070;
+  margin-top: 4px;
+}
+
+.profile-info {
+  width: 508px;
+  height: 331px;
+  padding: 40px 28px 60px 28px;
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  border-radius: 10px;
+  box-shadow: 0px 4px 84px -40px #9DA7FB66;
+  box-sizing: border-box;
+  text-align: start;
+}
+
+.profile-info h2 {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 100%;
+  color: #111111;
+  margin: 0;
+}
+
+.profile-info-divider {
+  width: 456px;
+  border-bottom: 1px solid #E7E7E7;
+  margin-top: 24px;
+}
+
+.profile-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 32px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-info li {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 16px;
+  color: #707070;
+}
+
+/* --- BLOC DROIT --- */
+.profile-right {
+  width: 575px;
+  height: 512px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.profile-right h2 {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 100%;
+  color: #111111;
+  margin: 0;
+  text-align: start;
+}
+
+.stats-since {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  color: #707070;
+  text-align: start;
+  margin-top: 4px;
+  margin-bottom: 32px;
+}
+
+/* --- CARTES BLEUES  --- */
+.stats-grid-blue {
+  display: grid;
+  grid-template-columns: repeat(2, 278px);
+  gap: 19px; 
+}
+
+.blue-card {
+  width: 278px;
+  height: 103px;
+  padding: 20px 30px;
+  background: #0B23F4;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+  box-sizing: border-box;
+}
+
+.blue-label {
+  font-family: Inter;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  color: #FFFFFF;
+}
+
+.blue-value {
+  font-family: Inter;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 22px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  color: #FFFFFF;
+}
+
+.blue-unit {
+  font-family: Inter;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  color: #B6BDFC;
+  vertical-align: bottom;
+}

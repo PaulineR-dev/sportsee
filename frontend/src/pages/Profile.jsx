@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
-import { getUserInfo } from "../services/api.js";
+import { getUserInfo, getUserActivity } from "../services/api.js";
 
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
+
+import "../styles/Profile.css";
 
 function formatMemberDate(dateString) {
   const date = new Date(dateString);
@@ -13,6 +15,19 @@ function formatMemberDate(dateString) {
     month: "long",
     year: "numeric"
   });
+}
+
+function formatHeight(heightCm) {
+  if (!heightCm || heightCm < 100) return `${heightCm} cm`;
+  const meters = Math.floor(heightCm / 100);
+  const centimeters = heightCm % 100;
+  return `${meters}m${centimeters}`;
+}
+
+function formatGender(gender) {
+  if (gender === "female") return "Femme";
+  if (gender === "male") return "Homme";
+  return gender;
 }
 
 export default function Profile() {
@@ -39,14 +54,32 @@ export default function Profile() {
       try {
         const data = await getUserInfo(token);
 
+        const userProfile = data.profile;
+
+        // Sessions entre createdAt et aujourd’hui
+        const startDate = userProfile.createdAt;
+        const endDate = new Date().toISOString().split("T")[0];
+
+        const activityData = await getUserActivity(token, startDate, endDate);
+
+        // Stats globales avec les sessions filtrées
+        const totalDuration = activityData.reduce((sum, s) => sum + (s.duration || 0), 0);
+        const totalDistance = activityData.reduce((sum, s) => sum + (s.distance || 0), 0);
+        const totalCalories = activityData.reduce((sum, s) => sum + (s.caloriesBurned || 0), 0);
+        const totalSessions = activityData.length;
+
         const weeklyGoal =
           data.statistics?.weeklyGoal ??
-          data.profile?.goal ??
+          data.weeklyGoal ??
           0;
 
-        setProfile(data.profile);
+        setProfile(userProfile);
+
         setStatistics({
-          ...data.statistics,
+          totalDuration,
+          totalDistance,
+          totalCalories,
+          totalSessions,
           weeklyGoal
         });
 
@@ -63,37 +96,111 @@ export default function Profile() {
   if (loading) return <p>Chargement du profil...</p>;
   if (!profile || !statistics) return <p>Impossible de charger le profil.</p>;
 
+  // --- CALCULS DES STATISTIQUES ---
   const totalDuration = statistics.totalDuration ?? 0;
   const hours = Math.floor(totalDuration / 60);
   const minutes = totalDuration % 60;
+
+  const totalCalories = statistics.totalCalories ?? 0;
+  const totalKm = statistics.totalDistance ?? 0;
+  const totalSessions = statistics.totalSessions ?? 0;
+
+  const createdAtDate = new Date(profile.createdAt);
+  const today = new Date();
+  const totalDays = Math.floor((today - createdAtDate) / (1000 * 60 * 60 * 24));
+  const restDays = totalDays - totalSessions;
 
   return (
     <>
       <Header />
 
-      <section style={{ padding: "40px" }}>
-        <div>
-          <h1>{profile.firstName} {profile.lastName}</h1>
-          <p>Membre depuis le {formatMemberDate(profile.createdAt)}</p>
+      <section className="profile-container">
+
+        <div className="profile-left">
+
+          <div className="profile-header">
+            <img
+              src={profile.profilePicture || "/default-profile.png"}
+              alt="Photo de profil"
+              className="profile-avatar"
+            />
+
+            <div>
+              <h1>{profile.firstName} {profile.lastName}</h1>
+              <p className="member-date">
+                Membre depuis le {formatMemberDate(profile.createdAt)}
+              </p>
+            </div>
+          </div>
+
+          <div className="profile-info">
+            <h2>Votre profil</h2>
+            <div className="profile-info-divider"></div>
+
+            <ul>
+              <li>Âge : {profile.age}</li>
+              <li>Genre : {formatGender(profile.gender)}</li>
+              <li>Taille : {formatHeight(profile.height)}</li>
+              <li>Poids : {profile.weight} kg</li>
+            </ul>
+          </div>
         </div>
 
-        <div style={{ marginTop: "30px" }}>
-          <h2>Votre profil</h2>
-          <p>Âge : {profile.age}</p>
-          <p>Taille : {profile.height} cm</p>
-          <p>Poids : {profile.weight} kg</p>
-        </div>
-
-        <div style={{ marginTop: "30px" }}>
+        <div className="profile-right">
           <h2>Vos statistiques</h2>
-          <p>Depuis le {formatMemberDate(profile.createdAt)}</p>
-          <ul>
-            <li>Temps total couru : {hours}h {minutes}min</li>
-            <li>Distance totale parcourue : {statistics.totalDistance} km</li>
-            <li>Nombre de sessions : {statistics.totalSessions}</li>
-            <li>Objectif de la semaine : {statistics.weeklyGoal} courses</li>
-          </ul>
+
+          <p className="stats-since">
+            Depuis le {formatMemberDate(profile.createdAt)}
+          </p>
+
+          <div className="stats-grid-blue">
+
+            <div className="blue-card">
+              <span className="blue-label">Temps total couru</span>
+              <span className="blue-value">
+                {hours}
+                <span className="blue-value">h</span>
+                {" "}
+                <span className="blue-unit">{minutes}</span>
+                <span className="blue-unit">min</span>
+              </span>
+            </div>
+
+            <div className="blue-card">
+              <span className="blue-label">Calories brûlées</span>
+              <span className="blue-value">
+                {totalCalories}
+                <span className="blue-unit"> cal</span>
+              </span>
+            </div>
+
+            <div className="blue-card">
+              <span className="blue-label">Distance totale parcourue</span>
+              <span className="blue-value">
+                {Math.round(totalKm)}
+                <span className="blue-unit"> km</span>
+              </span>
+            </div>
+
+            <div className="blue-card">
+              <span className="blue-label">Jours de repos</span>
+              <span className="blue-value">
+                {restDays}
+                <span className="blue-unit"> jours</span>
+              </span>
+            </div>
+
+            <div className="blue-card">
+              <span className="blue-label">Nombre de sessions</span>
+              <span className="blue-value">
+                {totalSessions}
+                <span className="blue-unit"> sessions</span>
+              </span>
+            </div>
+
+          </div>
         </div>
+
       </section>
 
       <Footer />
