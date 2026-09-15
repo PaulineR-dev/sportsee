@@ -349,3 +349,64 @@
 .week-box:nth-child(1) .week-box-value {
   color: #0B23F4;
 }
+
+/* --- RESPONSIVE POUR 1024px --- */
+@media (max-width: 1024px) {
+
+  .dashboard-top {
+    flex-wrap: wrap;
+    height: auto;
+    justify-content: center;
+    padding-bottom: 40px;
+  }
+
+  .dashboard-perf-title{
+    padding-left: 40px;
+  }
+  .dashboard-top-left {
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  .dashboard-top-right {
+    justify-content: center;
+    margin-right: 0;
+  }
+
+  .dashboard-top-right-box {
+    margin-right: 0;
+  }
+
+  .dashboard-perf-charts {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .dashboard-perf-block-1,
+  .dashboard-perf-block-2 {
+    width: 50%;
+    max-width: none;
+  }
+
+  /* Section objectif hebdomadaire */
+  .dashboard-goal {
+    width: 100%;
+    max-width: none;
+  }
+
+  /* Section cette semaine */
+  .week-summary {
+    width: 100%;
+    max-width: none;
+  }
+
+  .week-summary-content {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .week-box {
+    width: 100%;
+    max-width: none;
+  }
+}

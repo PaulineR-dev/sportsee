@@ -195,7 +195,7 @@ export default function WeeklyDistanceChart({ data }) {
 
           <div
             style={{
-              width: "88px",
+              minWidth: "88px",
               height: "15px",
               display: "flex",
               alignItems: "center",

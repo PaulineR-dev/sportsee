@@ -46,7 +46,6 @@
   color: #000;
 }
 
-
 .header-separator {
   width: 1px;
   height: 17px;
@@ -56,4 +55,27 @@
 #logout-btn {
   color: #4E6AF3;
   font-weight: bold;
+}
+
+/* --- RESPONSIVE POUR 1024px --- */
+@media (max-width: 1024px) {
+
+  .header {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    gap: 20px;
+    height: auto;
+  }
+
+  .header-left,
+  .header-nav {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .header-logo {
+    padding-left: 0;
+  }
 }

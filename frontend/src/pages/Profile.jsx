@@ -66,7 +66,9 @@ export default function Profile() {
         const totalDuration = activityData.reduce((sum, s) => sum + (s.duration || 0), 0);
         const totalDistance = activityData.reduce((sum, s) => sum + (s.distance || 0), 0);
         const totalCalories = activityData.reduce((sum, s) => sum + (s.caloriesBurned || 0), 0);
-        const totalSessions = activityData.length;
+
+        // Nombre de jours où l’utilisateur a couru (dates uniques)
+        const uniqueRunDays = new Set(activityData.map(s => s.date)).size;
 
         const weeklyGoal =
           data.statistics?.weeklyGoal ??
@@ -79,7 +81,8 @@ export default function Profile() {
           totalDuration,
           totalDistance,
           totalCalories,
-          totalSessions,
+          totalSessions: activityData.length,
+          uniqueRunDays,
           weeklyGoal
         });
 
@@ -108,7 +111,9 @@ export default function Profile() {
   const createdAtDate = new Date(profile.createdAt);
   const today = new Date();
   const totalDays = Math.floor((today - createdAtDate) / (1000 * 60 * 60 * 24));
-  const restDays = totalDays - totalSessions;
+
+  // Jours de repos = jours totaux - jours où il y a eu au moins une session
+  const restDays = totalDays - (statistics.uniqueRunDays ?? 0);
 
   return (
     <>

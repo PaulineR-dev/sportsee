@@ -181,3 +181,21 @@
   color: #B6BDFC;
   vertical-align: bottom;
 }
+
+/* --- RESPONSIVE POUR 1024px --- */
+@media (max-width: 1024px) {
+  .profile-container {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .profile-left,
+  .profile-right {
+    width: 100%;
+    max-width: none;
+  }
+
+  .stats-grid-blue {
+    grid-template-columns: repeat(auto-fit, minmax(278px, 1fr));
+  }
+}

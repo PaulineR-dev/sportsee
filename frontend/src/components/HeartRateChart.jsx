@@ -133,7 +133,7 @@ export default function HeartRateChart({ data }) {
             </button>
           )}
 
-          <div style={{ width: "88px", height: "15px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ minWidth: "88px", height: "15px", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span
               style={{
                 fontFamily: "Inter",

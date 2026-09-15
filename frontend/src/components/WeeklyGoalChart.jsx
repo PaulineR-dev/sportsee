@@ -120,7 +120,7 @@ export default function WeeklyGoalChart({ weeklyStats }) {
           </span>
         </div>
 
-        {/* DONUT CENTRÉ — taille Figma exacte */}
+        {/* DONUT CENTRÉ */}
         <div
           style={{
             position: "absolute",

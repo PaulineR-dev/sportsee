@@ -33,3 +33,25 @@
   height: 19px;
   padding-left: 24px;
 }
+
+/* --- RESPONSIVE POUR 1024px --- */
+@media (max-width: 1024px) {
+  .footer {
+    flex-wrap: wrap;
+    height: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .footer-left,
+  .footer-right {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .footer-logo {
+    padding-left: 0;
+  }
+}
