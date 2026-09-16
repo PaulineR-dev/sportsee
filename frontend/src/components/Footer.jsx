@@ -4,11 +4,14 @@ import "../styles/footer.css";
 export default function Footer() {
   return (
     <footer className="footer">
+
+      {/* Texte côté gauche */}
       <div className="footer-left">
         <p>©Sportsee</p>
         <p>Tous droits réservés</p>
       </div>
 
+      {/* Liens + logo côté droit */}
       <div className="footer-right">
         <a href="/conditions">Conditions générales</a>
         <a href="/contact">Contact</a>

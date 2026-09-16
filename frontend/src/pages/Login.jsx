@@ -7,18 +7,29 @@ import heroImage from "../assets/login-hero.png";
 import logo from "../assets/logo.png";
 
 export default function Login() {
+
+  // Champs du formulaire
   const [usernameInput, setUsernameInput] = useState("");
   const [password, setPassword] = useState("");
+
+  // Navigation
   const navigate = useNavigate();
+
+  // Fonction login du contexte
   const { login } = useContext(AuthContext);
 
+  // Soumission du formulaire
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
+      // Appel API login
       const data = await loginUser(usernameInput, password);
 
+      // Stocke token + userId dans le contexte
       login(data.token, data.userId);
+
+      // Redirection vers dashboard
       navigate(`/user/${data.userId}/dashboard`);
 
     } catch (error) {
@@ -28,23 +39,30 @@ export default function Login() {
 
   return (
     <div className="login-page">
+
+      {/* Colonne gauche */}
       <div className="login-left">
+
+        {/* Logo */}
         <div className="logo">
           <img src={logo} alt="Sportsee logo" />
         </div>
 
+        {/* Carte de login */}
         <div className="login-card">
+
           <p className="login-tagline">
             Transformez<br />vos stats en résultats
           </p>
 
           <h2 className="login-title">Se connecter</h2>
 
+          {/* Formulaire */}
           <form onSubmit={handleSubmit} className="login-form">
+
             <label>Nom d'utilisateur</label>
             <input
               type="text"
-              placeholder="Nom d'utilisateur"
               value={usernameInput}
               onChange={(e) => setUsernameInput(e.target.value)}
             />
@@ -52,7 +70,6 @@ export default function Login() {
             <label>Mot de passe</label>
             <input
               type="password"
-              placeholder="Mot de passe"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -66,9 +83,13 @@ export default function Login() {
         </div>
       </div>
 
+      {/* Colonne droite */}
       <div className="login-right">
+
+        {/* Image */}
         <img src={heroImage} alt="Sport runners" />
 
+        {/* Texte bas */}
         <div className="login-bottom-box">
           Analysez vos performances en un clin d’œil,<br />
           suivez vos progrès et atteignez vos objectifs.

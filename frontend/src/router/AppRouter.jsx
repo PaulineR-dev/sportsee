@@ -9,10 +9,11 @@ export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Route publique */}
+
+        {/* Page de connexion (publique) */}
         <Route path="/" element={<Login />} />
 
-        {/* Routes protégées */}
+        {/* Profil (protégé) */}
         <Route
           path="/user/:id"
           element={
@@ -22,6 +23,7 @@ export default function AppRouter() {
           }
         />
 
+        {/* Dashboard (protégé) */}
         <Route
           path="/user/:id/dashboard"
           element={
@@ -31,8 +33,9 @@ export default function AppRouter() {
           }
         />
 
-        {/* 404 */}
+        {/* Page 404 */}
         <Route path="*" element={<ErrorPage />} />
+
       </Routes>
     </BrowserRouter>
   );

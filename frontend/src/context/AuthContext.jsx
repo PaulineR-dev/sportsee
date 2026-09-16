@@ -1,11 +1,15 @@
 import { createContext, useState } from "react";
 
+// Contexte global pour l’authentification
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+
+  // Token + userId stockés en mémoire + localStorage
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [userId, setUserId] = useState(localStorage.getItem("userId") || null);
 
+  // Connexion : sauvegarde token + userId
   const login = (token, userId) => {
     setToken(token);
     setUserId(userId);
@@ -13,6 +17,7 @@ export function AuthProvider({ children }) {
     localStorage.setItem("userId", userId);
   };
 
+  // Déconnexion : supprime token + userId
   const logout = () => {
     setToken(null);
     setUserId(null);
@@ -20,6 +25,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("userId");
   };
 
+  // Rend le contexte d’authentification accessible à toute l’application
   return (
     <AuthContext.Provider value={{ token, userId, login, logout }}>
       {children}

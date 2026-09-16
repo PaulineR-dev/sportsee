@@ -3,12 +3,17 @@ import logo from "../assets/logo.png";
 import "../styles/header.css";
 
 export default function Header() {
+
+  // Pour naviguer entre les pages
   const navigate = useNavigate();
+
+  // Récupération du userId
   const userId = localStorage.getItem("userId");
 
   return (
     <header className="header">
-      {/* LOGO */}
+
+      {/* Logo */}
       <div className="header-left">
         <img
           src={logo}
@@ -17,18 +22,23 @@ export default function Header() {
         />
       </div>
 
-      {/* NAVIGATION */}
+      {/* Navigation */}
       <nav className="header-nav">
+
+        {/* Lien dashboard */}
         <button onClick={() => navigate(`/user/${userId}/dashboard`)}>
           Dashboard
         </button>
 
+        {/* Lien profil */}
         <button onClick={() => navigate(`/user/${userId}`)}>
           Mon profil
         </button>
 
+        {/* Séparateur */}
         <div className="header-separator"></div>
 
+        {/* Déconnexion */}
         <button
           id="logout-btn"
           onClick={() => {

@@ -23,6 +23,7 @@ import outline from "../assets/outline.png";
 
 import "../styles/Dashboard.css";
 
+// Format date FR
 function formatDateFR(date) {
   return date.toLocaleDateString("fr-FR", {
     day: "2-digit",
@@ -31,7 +32,7 @@ function formatDateFR(date) {
   });
 }
 
-// Fonction ajoutée uniquement pour le header
+// Format date pour le header
 function formatMemberDate(dateString) {
   const date = new Date(dateString);
   return date.toLocaleDateString("fr-FR", {
@@ -41,15 +42,16 @@ function formatMemberDate(dateString) {
   });
 }
 
-// Fonction pour calculer la distance totale depuis created_at
+// Distance totale depuis inscription
 function computeTotalDistanceFromSessions(sessions) {
   if (!sessions || sessions.length === 0) return 0;
   return sessions.reduce((sum, s) => sum + (s.distance || 0), 0);
 }
 
+// Bornage de la semaine actuelle
 function getCurrentWeekBounds() {
   const today = new Date();
-  const dayNum = (today.getDay() + 6) % 7; // 0 = lundi
+  const dayNum = (today.getDay() + 6) % 7; // lundi = 0
 
   const monday = new Date(today);
   monday.setDate(today.getDate() - dayNum);
@@ -61,10 +63,16 @@ function getCurrentWeekBounds() {
 }
 
 export default function Dashboard() {
+  // Auth
   const { token, userId } = useContext(AuthContext);
+
+  // URL
   const { id } = useParams();
+
+  // Navigation
   const navigate = useNavigate();
 
+  // États
   const [profile, setProfile] = useState(null);
   const [statistics, setStatistics] = useState(null);
   const [sessions, setSessions] = useState(null);
@@ -81,37 +89,46 @@ export default function Dashboard() {
 
   useEffect(() => {
 
+    // Pas de token : retour login
     if (!token) {
       navigate("/");
       return;
     }
 
+    // Mauvais ID : redirection vers son dashboard
     if (id !== userId) {
       navigate(`/user/${userId}/dashboard`);
       return;
     }
 
+    // Chargement du dashboard
     async function fetchDashboard() {
       try {
+        // Infos user
         const userInfo = await getUserInfo(token);
 
         setProfile(userInfo.profile);
         setStatistics(userInfo.statistics);
 
+        // Activité depuis inscription jusqu'à aujourd’hui
         const startDate = userInfo.profile.createdAt;
         const endDate = new Date().toISOString().split("T")[0];
 
         const activityData = await getUserActivity(token, startDate, endDate);
         setSessions(activityData);
 
+        // Graphique distance
         const dist = buildWeeklyDistance(activityData);
         setWeeklyDistance(dist);
 
+        // Graphique fréquence cardiaque
         const hr = buildHeartRate(activityData);
         setHeartRate(hr);
 
+        // Objectif hebdomadaire
         const resolvedGoal = userInfo.weeklyGoal ?? 0;
 
+        // Statistiques hebdomadaires
         const stats = buildWeeklyStats(
           { weeklyGoal: resolvedGoal },
           activityData
@@ -119,7 +136,7 @@ export default function Dashboard() {
 
         setWeeklyStats(stats);
 
-        // Calcul distance totale depuis created_at
+        // Distance totale depuis inscription
         const totalDistance = computeTotalDistanceFromSessions(activityData);
         setTotalDistanceFromStart(totalDistance);
 
@@ -133,6 +150,7 @@ export default function Dashboard() {
     fetchDashboard();
   }, [token, id, userId, navigate]);
 
+  // États de chargement/erreur
   if (loading) return <p>Chargement du dashboard...</p>;
   if (!profile || !statistics || !sessions) {
     return <p>Impossible de charger les données.</p>;
@@ -144,14 +162,17 @@ export default function Dashboard() {
 
       <section className="dashboard">
 
+        {/* Haut du dashboard */}
         <div className="dashboard-top">
 
+          {/* Profil */}
           <div className="dashboard-top-left">
-            <img
-              src={profile.profilePicture || "/default-profile.png"}
-              alt="Photo de profil"
-              className="dashboard-profile-pic"
-            />
+            <div className="dashboard-profile-pic">
+              <img
+                src={profile.profilePicture || "/default-profile.png"}
+                alt="Photo de profil"
+              />
+            </div>
 
             <div className="dashboard-user-info">
               <h2>{profile.firstName} {profile.lastName}</h2>
@@ -159,6 +180,7 @@ export default function Dashboard() {
             </div>
           </div>
 
+          {/* Distance totale */}
           <div className="dashboard-top-right">
             <span className="dashboard-top-right-label">
               Distance totale parcourue
@@ -172,6 +194,7 @@ export default function Dashboard() {
 
         </div>
 
+        {/* Performances */}
         <div className="dashboard-perf">
 
           <h2 className="dashboard-perf-title">Vos dernières performances</h2>
@@ -188,6 +211,7 @@ export default function Dashboard() {
 
         </div>
 
+        {/* Résumé semaine */}
         <div className="week-summary">
 
           <h2 className="week-summary-title">Cette semaine</h2>
@@ -198,10 +222,12 @@ export default function Dashboard() {
 
           <div className="week-summary-content">
 
+            {/* Objectif hebdomadaire */}
             <div className="week-summary-left">
               <WeeklyGoalChart weeklyStats={weeklyStats} />
             </div>
 
+            {/* Statistiques semaine */}
             <div className="week-summary-right">
 
               <div className="week-box">

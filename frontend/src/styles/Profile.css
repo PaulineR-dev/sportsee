@@ -101,6 +101,26 @@
   color: #707070;
 }
 
+.profile-avatar {
+  width: 104px;
+  height: 117px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 4px 84px -40px #9DA7FB66;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 300ms ease-out;
+  transform: scale(1.05);
+}
+
+.profile-avatar:hover img {
+  transform: scale(1.20);
+}
+
 /* --- BLOC DROIT --- */
 .profile-right {
   width: 575px;
@@ -132,7 +152,7 @@
   margin-bottom: 32px;
 }
 
-/* --- CARTES BLEUES  --- */
+/* --- CARDS BLEUES  --- */
 .stats-grid-blue {
   display: grid;
   grid-template-columns: repeat(2, 278px);

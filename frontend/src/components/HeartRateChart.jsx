@@ -8,25 +8,35 @@ import {
   Line
 } from "recharts";
 import { useState, useMemo } from "react";
-import propertynav1 from "../assets/propertynav1.png";
 
 export default function HeartRateChart({ data }) {
+
+  // Log des données
   console.log("HEART RATE DATA =", data);
 
+  // Si pas de données
   if (!data || !Array.isArray(data) || data.length === 0) {
     return <p>Aucune donnée de fréquence cardiaque disponible.</p>;
   }
 
+  // Hover sur la ligne moyenne
   const [isHoveringLine, setIsHoveringLine] = useState(false);
 
+  // Fenêtre de 7 jours
   const windowSize = 7;
+
+  // Index de départ
   const [windowStart, setWindowStart] = useState(
     Math.max(data.length - windowSize, 0)
   );
 
+  // Fin de fenêtre
   const windowEnd = windowStart + windowSize;
+
+  // Données visibles
   const visibleData = data.slice(windowStart, windowEnd);
 
+  // Format date pour titre
   function formatDate(dateStr) {
     const d = new Date(dateStr);
     if (isNaN(d)) return "—";
@@ -36,9 +46,11 @@ export default function HeartRateChart({ data }) {
     });
   }
 
+  // Période affichée
   const periodStart = formatDate(visibleData[0]?.day);
   const periodEnd = formatDate(visibleData[visibleData.length - 1]?.day);
 
+  // Format labels (lun, mar…)
   const formattedData = visibleData.map((d) => {
     const dateObj = new Date(d.day);
     const label = dateObj.toLocaleDateString("fr-FR", { weekday: "short" });
@@ -48,12 +60,14 @@ export default function HeartRateChart({ data }) {
     };
   });
 
+  // Moyenne BPM
   const averageBPM = useMemo(() => {
     return Math.round(
       visibleData.reduce((sum, d) => sum + d.avg, 0) / visibleData.length
     );
   }, [visibleData]);
 
+  // Min / max pour l’échelle Y
   const rawMax = Math.max(...visibleData.map((d) => d.max));
   const rawMin = Math.min(...visibleData.map((d) => d.min));
 
@@ -62,17 +76,21 @@ export default function HeartRateChart({ data }) {
 
   const ticks = [yMin, 130, 145, 160, yMax];
 
+  // Activation des flèches
   const canGoPrev = windowStart > 0;
   const canGoNext = windowEnd < data.length;
 
+  // Flèche gauche
   const handlePrev = () => {
     if (canGoPrev) setWindowStart(windowStart - 1);
   };
 
+  // Flèche droite
   const handleNext = () => {
     if (canGoNext) setWindowStart(windowStart + 1);
   };
 
+  // Tooltip vide
   function EmptyTooltip() {
     return null;
   }
@@ -85,7 +103,7 @@ export default function HeartRateChart({ data }) {
         backgroundColor: "#fff",
         borderRadius: "10px",
         paddingTop: "20px",
-        paddingRight: "40px", 
+        paddingRight: "40px",
         paddingBottom: "20px",
         paddingLeft: "40px",
         display: "flex",
@@ -93,7 +111,7 @@ export default function HeartRateChart({ data }) {
         alignItems: "flex-start"
       }}
     >
-      {/* Titre */}
+      {/* Titre + moyenne */}
       <div
         style={{
           display: "flex",
@@ -125,11 +143,7 @@ export default function HeartRateChart({ data }) {
               onClick={handlePrev}
               style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
             >
-              <img
-                src={propertynav1}
-                alt="Précédent"
-                style={{ width: "24px", height: "24px", transform: "rotate(180deg)" }}
-              />
+              <div className="chart-arrow prev"></div>
             </button>
           )}
 
@@ -152,13 +166,13 @@ export default function HeartRateChart({ data }) {
               onClick={handleNext}
               style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
             >
-              <img src={propertynav1} alt="Suivant" style={{ width: "24px", height: "24px" }} />
+              <div className="chart-arrow next"></div>
             </button>
           )}
         </div>
       </div>
 
-      {/* --- Graphique  --- */}
+      {/* Graphique */}
       <div
         style={{
           width: "503px",
@@ -188,7 +202,6 @@ export default function HeartRateChart({ data }) {
               fontFamily: "Inter",
               fontWeight: 400,
               fontSize: 12,
-              textAnchor: "middle",
             }}
             tickLine={false}
             axisLine={false}
@@ -211,9 +224,11 @@ export default function HeartRateChart({ data }) {
 
           <Tooltip content={<EmptyTooltip />} cursor={{ fill: "transparent" }} />
 
+          {/* Barres min / max */}
           <Bar dataKey="min" fill="#FCC1B6" radius={[10, 10, 0, 0]} barSize={14} />
           <Bar dataKey="max" fill="#F4320B" radius={[10, 10, 0, 0]} barSize={14} />
 
+          {/* Ligne moyenne */}
           <Line
             type="monotone"
             dataKey="avg"

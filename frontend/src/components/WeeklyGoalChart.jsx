@@ -1,17 +1,22 @@
 import { PieChart, Pie, Cell } from "recharts";
 
+// Couleurs du donut
 const COLORS = {
   completed: "#0B23F4",
   remaining: "#B6BDFC"
 };
 
 export default function WeeklyGoalChart({ weeklyStats }) {
+
+  // Si pas de données
   if (!weeklyStats) return <p>Aucune donnée d'objectif disponible.</p>;
 
+  // Valeurs objectif
   const completed = weeklyStats.runsCompleted ?? 0;
   const goal = weeklyStats.weeklyGoal ?? 0;
   const remaining = Math.max(goal - completed, 0);
 
+  // Données du donut
   const data = [
     { name: "Restantes", value: remaining, color: COLORS.remaining },
     { name: "Réalisées", value: completed, color: COLORS.completed }
@@ -32,10 +37,10 @@ export default function WeeklyGoalChart({ weeklyStats }) {
         alignItems: "flex-start"
       }}
     >
-      {/* TITRE */}
+      {/* Titre + sous-titre */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
         
-        {/* Ligne xNb + sur objectif */}
+        {/* Ligne xNb / objectif */}
         <div style={{ display: "flex", alignItems: "flex-end", gap: "6px" }}>
           <span
             style={{
@@ -55,8 +60,7 @@ export default function WeeklyGoalChart({ weeklyStats }) {
               fontWeight: 500,
               fontSize: "16px",
               lineHeight: "100%",
-              color: "#B6BDFC",
-              verticalAlign: "bottom"
+              color: "#B6BDFC"
             }}
           >
             sur objectif de {goal}
@@ -78,7 +82,7 @@ export default function WeeklyGoalChart({ weeklyStats }) {
         </span>
       </div>
 
-      {/* DONUT + LÉGENDE AUTOUR */}
+      {/* Donut + légendes */}
       <div
         style={{
           position: "relative",
@@ -87,7 +91,7 @@ export default function WeeklyGoalChart({ weeklyStats }) {
           marginTop: "8px"
         }}
       >
-        {/* LÉGENDE EN HAUT À DROITE */}
+        {/* Légende haut droite */}
         <div
           style={{
             position: "absolute",
@@ -120,7 +124,7 @@ export default function WeeklyGoalChart({ weeklyStats }) {
           </span>
         </div>
 
-        {/* DONUT CENTRÉ */}
+        {/* Donut */}
         <div
           style={{
             position: "absolute",
@@ -151,7 +155,7 @@ export default function WeeklyGoalChart({ weeklyStats }) {
           </PieChart>
         </div>
 
-        {/* LÉGENDE EN BAS À GAUCHE */}
+        {/* Légende bas gauche */}
         <div
           style={{
             position: "absolute",

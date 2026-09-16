@@ -41,8 +41,20 @@
   width: 104px;
   height: 117px;
   border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.dashboard-profile-pic img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  background: #ddd;
+  transition: transform 300ms ease-out;
+  transform: scale(1.05); 
+}
+
+.dashboard-profile-pic:hover img {
+  transform: scale(1.20); 
 }
 
 /* --- Nom + date --- */
@@ -215,12 +227,51 @@
   line-height: 100%;
 }
 
+/* --- FLÈCHES CSS --- */
 .chart-arrow {
-  background: none;
-  border: none;
-  color: #4E6AF3;
-  font-size: 18px;
+  width: 24px;
+  height: 24px;
+  border-radius: 10px;
+  border: 1px solid var(--Tokens-Typographie-Primary, #111111);
+  background: #FFFFFF;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   cursor: pointer;
+  transition: all 300ms ease-in;
+}
+
+/* Flèche */
+.chart-arrow::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-top: 1px solid var(--Tokens-Typographie-Primary, #111111);
+  border-right: 1px solid var(--Tokens-Typographie-Primary, #111111);
+  transform: rotate(45deg);
+}
+
+/* Flèche gauche */
+.chart-arrow.prev::before {
+  transform: rotate(-135deg);
+}
+
+/* Flèche droite */
+.chart-arrow.next::before {
+  transform: rotate(45deg);
+}
+
+/* Hover */
+.chart-arrow:hover {
+  background: #5465F7;
+  border-color: #0B23F4;
+}
+
+/* Flèche devient blanche */
+.chart-arrow:hover::before {
+  border-color: #FFFFFF;
 }
 
 /* GRAPHIQUE */

@@ -1,9 +1,10 @@
 // -------------------------------------------------------------
-// Transforme les sessions en données pour le graphique de distance hebdomadaire
+// Distance hebdomadaire (pour le graphique)
 // -------------------------------------------------------------
 export function buildWeeklyDistance(sessions) {
   if (!sessions) return [];
 
+  // Normalisation tableau
   const sessionArray = Array.isArray(sessions)
     ? sessions
     : Object.values(sessions);
@@ -12,15 +13,17 @@ export function buildWeeklyDistance(sessions) {
 
   const weeks = {};
 
+  // Regroupe les sessions par semaine ISO
   sessionArray.forEach((s) => {
     const d = new Date(s.date);
 
-    const dayNum = (d.getDay() + 6) % 7; // 0 = lundi
+    const dayNum = (d.getDay() + 6) % 7; // Trouver le lundi
     d.setDate(d.getDate() - dayNum + 3);
 
     const weekYear = d.getFullYear();
     const week1 = new Date(weekYear, 0, 4);
 
+    // Numéro de semaine ISO
     const week =
       1 +
       Math.round(
@@ -29,6 +32,7 @@ export function buildWeeklyDistance(sessions) {
 
     const key = `${weekYear}-W${week}`;
 
+    // Initialise la semaine si absente
     if (!weeks[key]) {
       weeks[key] = {
         isoWeek: key,
@@ -37,11 +41,12 @@ export function buildWeeklyDistance(sessions) {
       };
     }
 
+    // Ajoute distance + date
     weeks[key].km += s.distance;
     weeks[key].dates.push(s.date);
   });
 
-  // Ajoute la semaine actuelle si absente
+  // Ajoute la semaine actuelle si elle n’existe pas
   const today = new Date();
   const dayNumToday = (today.getDay() + 6) % 7;
   today.setDate(today.getDate() - dayNumToday + 3);
@@ -65,10 +70,12 @@ export function buildWeeklyDistance(sessions) {
     };
   }
 
+  // Trie les semaines par date
   const weeklyArray = Object.values(weeks).sort(
     (a, b) => new Date(a.dates[0]) - new Date(b.dates[0])
   );
 
+  // Formate pour le graphique
   return weeklyArray.map((w, index) => ({
     week: `S${index + 1}`,
     km: w.km,
@@ -79,11 +86,12 @@ export function buildWeeklyDistance(sessions) {
 
 
 // -------------------------------------------------------------
-// Transforme les sessions en données pour le graphique de fréquence cardiaque
+// Fréquence cardiaque (pour le graphique)
 // -------------------------------------------------------------
 export function buildHeartRate(sessions) {
   if (!sessions) return [];
 
+  // Transforme chaque session en min/max/moyenne
   return sessions.map((session) => ({
     day: session.date,
     min: session.heartRate.min,
@@ -94,9 +102,10 @@ export function buildHeartRate(sessions) {
 
 
 // -------------------------------------------------------------
-// Construit les statistiques de la semaine en cours (lundi → aujourd’hui)
+// Statistiques de la semaine actuelle
 // -------------------------------------------------------------
 export function buildWeeklyStats(statistics, sessions) {
+  // Si pas de statistiques
   if (!statistics) {
     return {
       weeklyGoal: null,
@@ -108,6 +117,7 @@ export function buildWeeklyStats(statistics, sessions) {
     };
   }
 
+  // Si pas de sessions
   if (!sessions || sessions.length === 0) {
     return {
       weeklyGoal: statistics.weeklyGoal ?? null,
@@ -119,27 +129,29 @@ export function buildWeeklyStats(statistics, sessions) {
     };
   }
 
-  // Trouver le lundi de la semaine actuelle
+  // Lundi de la semaine
   const today = new Date();
-  const dayNum = (today.getDay() + 6) % 7; // 0 = lundi
+  const dayNum = (today.getDay() + 6) % 7;
   const monday = new Date(today);
   monday.setHours(0, 0, 0, 0);
   monday.setDate(today.getDate() - dayNum);
 
-  // Fin = aujourd’hui à 23:59:59
+  // Fin de journée
   const endOfToday = new Date(today);
   endOfToday.setHours(23, 59, 59, 999);
 
-  // Sessions de la semaine courante
+  // Sessions de la semaine
   const weekSessions = sessions.filter((s) => {
     const d = new Date(s.date);
     return d >= monday && d <= endOfToday;
   });
 
+  // Calculs
   const runsCompleted = weekSessions.length;
   const totalDistance = weekSessions.reduce((sum, s) => sum + s.distance, 0);
   const totalDuration = weekSessions.reduce((sum, s) => sum + s.duration, 0);
 
+  // Retour formaté
   return {
     weeklyGoal: statistics.weeklyGoal ?? null,
     runsCompleted,
