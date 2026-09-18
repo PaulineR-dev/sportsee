@@ -11,32 +11,22 @@ import { useState, useMemo } from "react";
 
 export default function HeartRateChart({ data }) {
 
-  // Log des données
   console.log("HEART RATE DATA =", data);
 
-  // Si pas de données
   if (!data || !Array.isArray(data) || data.length === 0) {
     return <p>Aucune donnée de fréquence cardiaque disponible.</p>;
   }
 
-  // Hover sur la ligne moyenne
   const [isHoveringLine, setIsHoveringLine] = useState(false);
 
-  // Fenêtre de 7 jours
   const windowSize = 7;
-
-  // Index de départ
   const [windowStart, setWindowStart] = useState(
     Math.max(data.length - windowSize, 0)
   );
-
-  // Fin de fenêtre
   const windowEnd = windowStart + windowSize;
 
-  // Données visibles
   const visibleData = data.slice(windowStart, windowEnd);
 
-  // Format date pour titre
   function formatDate(dateStr) {
     const d = new Date(dateStr);
     if (isNaN(d)) return "—";
@@ -46,11 +36,9 @@ export default function HeartRateChart({ data }) {
     });
   }
 
-  // Période affichée
   const periodStart = formatDate(visibleData[0]?.day);
   const periodEnd = formatDate(visibleData[visibleData.length - 1]?.day);
 
-  // Format labels (lun, mar…)
   const formattedData = visibleData.map((d) => {
     const dateObj = new Date(d.day);
     const label = dateObj.toLocaleDateString("fr-FR", { weekday: "short" });
@@ -60,37 +48,30 @@ export default function HeartRateChart({ data }) {
     };
   });
 
-  // Moyenne BPM
   const averageBPM = useMemo(() => {
     return Math.round(
       visibleData.reduce((sum, d) => sum + d.avg, 0) / visibleData.length
     );
   }, [visibleData]);
 
-  // Min / max pour l’échelle Y
   const rawMax = Math.max(...visibleData.map((d) => d.max));
   const rawMin = Math.min(...visibleData.map((d) => d.min));
 
   const yMax = rawMax + 2;
-  const yMin = rawMin > 120 ? 120 : rawMin - 3;
+  const tickBas = rawMin < 130 ? rawMin - 2 : 130;
+  const ticks = [tickBas, 145, 160, yMax];
 
-  const ticks = [yMin, 130, 145, 160, yMax];
-
-  // Activation des flèches
   const canGoPrev = windowStart > 0;
   const canGoNext = windowEnd < data.length;
 
-  // Flèche gauche
   const handlePrev = () => {
     if (canGoPrev) setWindowStart(windowStart - 1);
   };
 
-  // Flèche droite
   const handleNext = () => {
     if (canGoNext) setWindowStart(windowStart + 1);
   };
 
-  // Tooltip vide
   function EmptyTooltip() {
     return null;
   }
@@ -102,58 +83,65 @@ export default function HeartRateChart({ data }) {
         maxWidth: "700px",
         backgroundColor: "#fff",
         borderRadius: "10px",
-        paddingTop: "20px",
-        paddingRight: "40px",
-        paddingBottom: "20px",
-        paddingLeft: "40px",
         display: "flex",
         flexDirection: "column",
-        alignItems: "flex-start"
+        alignItems: "flex-start",
+        position: "relative",
       }}
     >
-      {/* Titre + moyenne */}
+
+      {/* Ligne BPM + flèches/dates */}
       <div
         style={{
+          width: "503px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          width: "100%",
-          marginBottom: "10px",
+          paddingLeft: "40px",
+          paddingRight: "40px",
+          paddingTop: "26.5px"
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-          <h2 style={{ color: "#E60000", margin: 0 }}>{averageBPM} BPM</h2>
-          <p style={{ color: "#777", fontSize: "14px", margin: 0 }}>
-            Fréquence cardiaque moyenne
-          </p>
-        </div>
+        <h2
+          style={{
+            margin: 0,
+            whiteSpace: "nowrap",
+            fontFamily: "Inter",
+            fontWeight: 500,
+            fontSize: "22px",
+            color: "#E60000"
+          }}
+        >
+          {averageBPM} BPM
+        </h2>
 
-        {/* Flèches + dates */}
         <div
           style={{
-            width: "156px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "6px",
+            gap: "6px"
           }}
         >
           {canGoPrev && (
-            <button
-              onClick={handlePrev}
-              style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
-            >
-              <div className="chart-arrow prev"></div>
-            </button>
+            <button onClick={handlePrev} className="chart-arrow prev"></button>
           )}
 
-          <div style={{ minWidth: "88px", height: "15px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div
+            style={{
+              minWidth: "88px",
+              height: "15px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
             <span
               style={{
                 fontFamily: "Inter",
                 fontWeight: 400,
                 fontSize: "12px",
-                color: "#111",
+                color: "#111111",
                 whiteSpace: "nowrap"
               }}
             >
@@ -162,26 +150,36 @@ export default function HeartRateChart({ data }) {
           </div>
 
           {canGoNext && (
-            <button
-              onClick={handleNext}
-              style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
-            >
-              <div className="chart-arrow next"></div>
-            </button>
+            <button onClick={handleNext} className="chart-arrow next"></button>
           )}
         </div>
       </div>
 
-      {/* Graphique */}
+      {/* Texte sous le titre */}
+      <p
+        style={{
+          margin: 0,
+          fontFamily: "Inter",
+          fontSize: "12px",
+          color: "#707070",
+          marginTop: "10.5px",
+          paddingLeft: "40px",
+          marginBottom: "40px",
+          lineHeight: "15px"
+        }}
+      >
+        Fréquence cardiaque moyenne
+      </p>
+
+      {/* Graphique EXACTEMENT */}
       <div
         style={{
-          width: "503px",
+          width: "543px",
           height: "307px",
-          marginLeft: "-36px"
         }}
       >
         <BarChart
-          width={503}
+          width={543}
           height={307}
           data={formattedData}
           margin={{
@@ -201,10 +199,10 @@ export default function HeartRateChart({ data }) {
               fill: "#707070",
               fontFamily: "Inter",
               fontWeight: 400,
-              fontSize: 12,
+              fontSize: 12
             }}
             tickLine={false}
-            axisLine={false}
+            axisLine={true}
             tickMargin={22}
           />
 
@@ -213,22 +211,20 @@ export default function HeartRateChart({ data }) {
               fill: "#707070",
               fontFamily: "Inter",
               fontWeight: 400,
-              fontSize: 10,
+              fontSize: 10
             }}
-            domain={[yMin, yMax]}
+            domain={[tickBas, yMax]}
             ticks={ticks}
             tickLine={false}
-            axisLine={false}
+            axisLine={true}
             tickMargin={7}
           />
 
           <Tooltip content={<EmptyTooltip />} cursor={{ fill: "transparent" }} />
 
-          {/* Barres min / max */}
-          <Bar dataKey="min" fill="#FCC1B6" radius={[10, 10, 0, 0]} barSize={14} />
-          <Bar dataKey="max" fill="#F4320B" radius={[10, 10, 0, 0]} barSize={14} />
+          <Bar dataKey="min" fill="#FCC1B6" radius={[10, 10, 10, 10]} barSize={14} />
+          <Bar dataKey="max" fill="#F4320B" radius={[10, 10, 10, 10]} barSize={14} />
 
-          {/* Ligne moyenne */}
           <Line
             type="monotone"
             dataKey="avg"
@@ -248,15 +244,15 @@ export default function HeartRateChart({ data }) {
       {/* Légende */}
       <div
         style={{
-          marginTop: "16px",
+          position: "absolute",
+          bottom: "24px",
+          left: "40px",
           display: "flex",
-          justifyContent: "flex-start",
           alignItems: "center",
           gap: "16px",
           fontFamily: "Inter",
-          fontWeight: 400,
           fontSize: "12px",
-          color: "#707070",
+          color: "#707070"
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>

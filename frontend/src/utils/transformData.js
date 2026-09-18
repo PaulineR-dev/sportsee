@@ -46,18 +46,19 @@ export function buildWeeklyDistance(sessions) {
     weeks[key].dates.push(s.date);
   });
 
-  // Ajoute la semaine actuelle si elle n’existe pas
   const today = new Date();
-  const dayNumToday = (today.getDay() + 6) % 7;
-  today.setDate(today.getDate() - dayNumToday + 3);
+  const isoToday = new Date(today);
 
-  const currentYear = today.getFullYear();
+  const dayNumToday = (isoToday.getDay() + 6) % 7;
+  isoToday.setDate(isoToday.getDate() - dayNumToday + 3);
+
+  const currentYear = isoToday.getFullYear();
   const week1Current = new Date(currentYear, 0, 4);
 
   const currentWeek =
     1 +
     Math.round(
-      ((today - week1Current) / 86400000 - 3 + ((week1Current.getDay() + 6) % 7)) / 7
+      ((isoToday - week1Current) / 86400000 - 3 + ((week1Current.getDay() + 6) % 7)) / 7
     );
 
   const currentKey = `${currentYear}-W${currentWeek}`;
@@ -66,7 +67,7 @@ export function buildWeeklyDistance(sessions) {
     weeks[currentKey] = {
       isoWeek: currentKey,
       km: 0,
-      dates: [today.toISOString().split("T")[0]]
+      dates: [today.toISOString().split("T")[0]] 
     };
   }
 
@@ -75,10 +76,10 @@ export function buildWeeklyDistance(sessions) {
     (a, b) => new Date(a.dates[0]) - new Date(b.dates[0])
   );
 
-  // Formate pour le graphique
+  // Arrondir km pour l'affichage (tooltip + graphique)
   return weeklyArray.map((w, index) => ({
     week: `S${index + 1}`,
-    km: w.km,
+    km: Math.round(w.km),
     date: w.dates[0],
     isoWeek: w.isoWeek
   }));

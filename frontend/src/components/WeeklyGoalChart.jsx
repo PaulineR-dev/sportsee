@@ -27,7 +27,7 @@ export default function WeeklyGoalChart({ weeklyStats }) {
       style={{
         width: "450px",
         height: "342px",
-        padding: "16px 38px 32px 38px",
+        padding: "23px 38px 32px 38px",
         boxSizing: "border-box",
         borderRadius: "10px",
         backgroundColor: "#fff",
@@ -41,7 +41,7 @@ export default function WeeklyGoalChart({ weeklyStats }) {
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
         
         {/* Ligne xNb / objectif */}
-        <div style={{ display: "flex", alignItems: "flex-end", gap: "6px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <span
             style={{
               fontFamily: "Inter",
@@ -99,7 +99,8 @@ export default function WeeklyGoalChart({ weeklyStats }) {
             right: "56px",
             display: "flex",
             alignItems: "center",
-            gap: "6px"
+            gap: "6px",
+            lineHeight: "48px"
           }}
         >
           <div

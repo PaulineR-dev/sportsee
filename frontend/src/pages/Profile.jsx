@@ -171,7 +171,7 @@ export default function Profile() {
           <h2>Vos statistiques</h2>
 
           <p className="stats-since">
-            Depuis le {formatMemberDate(profile.createdAt)}
+            depuis le {formatMemberDate(profile.createdAt)}
           </p>
 
           <div className="stats-grid-blue">

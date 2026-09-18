@@ -10,49 +10,54 @@ import {
 
 import { useState, useMemo } from "react";
 
+const RoundedBar = (props) => {
+  const { x, y, width, height, fill } = props;
+  return (
+    <rect
+      x={x}
+      y={y}
+      width={width}
+      height={height}
+      rx={10}
+      ry={10}
+      fill={fill}
+    />
+  );
+};
+
 export default function WeeklyDistanceChart({ data }) {
 
-  // Si pas de données
   if (!data || !Array.isArray(data) || data.length === 0) {
     return <p>Aucune donnée de distance disponible.</p>;
   }
 
-  // Nombre de semaines visibles
   const windowSize = 4;
 
-  // Index de départ de la fenêtre
   const [windowStart, setWindowStart] = useState(
     Math.max(data.length - windowSize, 0)
   );
 
-  // Fin de la fenêtre
   const windowEnd = windowStart + windowSize;
 
-  // Données affichées
   const visibleData = data.slice(windowStart, windowEnd);
 
-  // Flèche gauche
   const handlePrev = () => {
     setWindowStart((prev) => Math.max(prev - 1, 0));
   };
 
-  // Flèche droite
   const handleNext = () => {
     setWindowStart((prev) =>
       Math.min(prev + 1, data.length - windowSize)
     );
   };
 
-  // Activation des flèches
   const canGoPrev = windowStart > 0;
   const canGoNext = windowStart < data.length - windowSize;
 
-  // Moyenne des km
   const averageKm = useMemo(() => {
     return visibleData.reduce((sum, d) => sum + d.km, 0) / visibleData.length;
   }, [visibleData]);
 
-  // Bornes de semaine (lundi → dimanche)
   function getWeekBounds(dateStr) {
     const d = new Date(dateStr);
     const dayNum = (d.getDay() + 6) % 7;
@@ -63,7 +68,6 @@ export default function WeeklyDistanceChart({ data }) {
     return { start: monday, end: sunday };
   }
 
-  // Format date pour titre
   function formatDate(date) {
     return date.toLocaleDateString("fr-FR", {
       day: "numeric",
@@ -71,7 +75,6 @@ export default function WeeklyDistanceChart({ data }) {
     });
   }
 
-  // Format date tooltip
   function formatTooltipDate(date) {
     return date
       .toLocaleDateString("fr-FR", {
@@ -82,7 +85,6 @@ export default function WeeklyDistanceChart({ data }) {
       .replace("/", ".");
   }
 
-  // Période affichée
   const firstWeekBounds = getWeekBounds(visibleData[0].date);
   const lastWeekBounds = getWeekBounds(
     visibleData[visibleData.length - 1].date
@@ -91,17 +93,21 @@ export default function WeeklyDistanceChart({ data }) {
   const periodStart = formatDate(firstWeekBounds.start);
   const periodEnd = formatDate(lastWeekBounds.end);
 
-  // Échelle Y dynamique
-  const rawMax = Math.max(...visibleData.map((d) => d.km));
-  const maxRounded = Math.ceil(rawMax / 10) * 10;
-  const ticks = rawMax < 5 ? [0, 2.5, 5, 7.5] : [
-    0,
-    Math.ceil(maxRounded / 3),
-    Math.ceil((maxRounded * 2) / 3),
-    maxRounded
-  ];
+const rawMax = Math.max(...visibleData.map((d) => d.km));
+const maxRounded = Math.ceil(rawMax / 5) * 5;
 
-  // Tooltip personnalisé
+let ticks;
+if (rawMax < 5) {
+  ticks = [0, 2.5, 5, 7.5];
+} else {
+  const step = maxRounded / 3;
+
+  const tick2 = Math.ceil(step / 5) * 5;
+  const tick3 = Math.ceil((2 * step) / 5) * 5;
+
+  ticks = [0, tick2, tick3, maxRounded];
+}
+
   function CustomTooltip({ active, payload, coordinate }) {
     if (!active || !payload || !payload.length) return null;
 
@@ -116,15 +122,17 @@ export default function WeeklyDistanceChart({ data }) {
         style={{
           position: "absolute",
           left: coordinate.x - 53,
-          top: coordinate.y - 86,
+          top: coordinate.y - 40,
 
-          width: "108px",
-          height: "82px",
+          minWidth: "108px",
+          width: "auto",
+          height: "auto",
+          boxSizing: "border-box",
+
           paddingTop: "23px",
           paddingLeft: "13px",
           paddingRight: "13px",
           paddingBottom: "23px",
-          boxSizing: "border-box",
 
           display: "flex",
           flexDirection: "column",
@@ -138,20 +146,25 @@ export default function WeeklyDistanceChart({ data }) {
           pointerEvents: "none"
         }}
       >
-        {/* Dates */}
+
         <div
           style={{
             fontFamily: "Inter",
             fontWeight: 400,
             fontSize: "12px",
             lineHeight: "100%",
-            color: "#E7E7E7"
+            color: "#E7E7E7",
+
+            whiteSpace: "nowrap",
+            textAlign: "left",
+            paddingLeft: "13px",
+            paddingRight: "13px",
+            marginBottom: "2px"
           }}
         >
           {startStr} au {endStr}
         </div>
 
-        {/* Km */}
         <div
           style={{
             fontFamily: "Inter",
@@ -159,7 +172,8 @@ export default function WeeklyDistanceChart({ data }) {
             fontSize: "16px",
             lineHeight: "100%",
             color: "#E7E7E7",
-            paddingLeft: "13px"
+            paddingLeft: "13px",
+            textAlign: "left"
           }}
         >
           {item.km} km
@@ -171,16 +185,15 @@ export default function WeeklyDistanceChart({ data }) {
   return (
     <div className="chart-wrapper">
 
-      {/* Ligne du haut */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: "18px",
           paddingTop: "26.5px",
           paddingLeft: "40px",
           paddingRight: "40px",
+          width: "365px"
         }}
       >
         <h2
@@ -193,10 +206,9 @@ export default function WeeklyDistanceChart({ data }) {
           {Math.round(averageKm)} km en moyenne
         </h2>
 
-        {/* Flèches + dates */}
         <div
           style={{
-            width: "156px",
+            width: "auto",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -242,30 +254,30 @@ export default function WeeklyDistanceChart({ data }) {
         </div>
       </div>
 
-      {/* Sous-titre */}
       <p
         style={{
           margin: 0,
           paddingLeft: "40px",
-          paddingRight: "40px",
           fontFamily: "Inter",
           fontSize: "12px",
           color: "#707070",
-          marginBottom: "10px"
+          marginBottom: "40px",
+          textAlign: "left",
+          marginTop: "10.5px",
+          marginBottom: "40px"
         }}
       >
-        Total des kilomètres sur les 4 dernières semaines
+        Total des kilomètres 4 dernières semaines
       </p>
 
-      {/* Graphique */}
       <div
         className="chart-container"
         style={{
           width: "370px",
-          height: "337px",
+          height: "307px",
           display: "flex",
           justifyContent: "flex-start",
-          alignItems: "flex-start"
+          alignItems: "center",
         }}
       >
         <ResponsiveContainer width="100%" height="100%">
@@ -288,7 +300,7 @@ export default function WeeklyDistanceChart({ data }) {
                 fontSize: 12
               }}
               tickLine={false}
-              tickMargin={24}
+              tickMargin={22}
             />
 
             <YAxis
@@ -308,24 +320,29 @@ export default function WeeklyDistanceChart({ data }) {
             <Bar
               dataKey="km"
               fill="#B6BDFC"
-              radius={[10, 10, 0, 0]}
               barSize={14}
-              activeBar={{ fill: "#0B23F4" }}
+
+              activeBar={{ fill: "#0B23F4", radius: [10, 10, 10, 10] }}
+
+              shape={<RoundedBar />}
             />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Légende */}
       <div
         className="chart-legend"
         style={{
-          textAlign: "left",
-          color: "#707070",
+          position: "absolute",
+          bottom: "40px",
+          left: "40px",
           display: "flex",
           alignItems: "center",
           gap: "6px",
-          paddingLeft: "40px" 
+          color: "#707070",
+          fontFamily: "Inter",
+          fontSize: "12px",
+          lineHeight: "15px"
         }}
       >
         <div
@@ -337,15 +354,7 @@ export default function WeeklyDistanceChart({ data }) {
           }}
         ></div>
 
-        <span
-          style={{
-            fontFamily: "Inter",
-            fontSize: "12px",
-            color: "#707070"
-          }}
-        >
-          Km
-        </span>
+        <span>Km</span>
       </div>
     </div>
   );
