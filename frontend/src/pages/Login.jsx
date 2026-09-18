@@ -8,30 +8,19 @@ import logo from "../assets/logo.png";
 
 export default function Login() {
 
-  // Champs du formulaire
   const [usernameInput, setUsernameInput] = useState("");
   const [password, setPassword] = useState("");
 
-  // Navigation
   const navigate = useNavigate();
-
-  // Fonction login du contexte
   const { login } = useContext(AuthContext);
 
-  // Soumission du formulaire
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
-      // Appel API login
       const data = await loginUser(usernameInput, password);
-
-      // Stocke token + userId dans le contexte
       login(data.token, data.userId);
-
-      // Redirection vers dashboard
-      navigate(`/user/${data.userId}/dashboard`);
-
+      navigate(`/user/dashboard`);
     } catch (error) {
       alert(error.message);
     }
@@ -40,56 +29,53 @@ export default function Login() {
   return (
     <div className="login-page">
 
-      {/* Colonne gauche */}
       <div className="login-left">
 
-        {/* Logo */}
-        <div className="logo">
-          <img src={logo} alt="Sportsee logo" />
+        <div className="login-left-top">
+          <div className="logo">
+            <img src={logo} alt="Sportsee logo" />
+          </div>
         </div>
 
-        {/* Carte de login */}
-        <div className="login-card">
+        <div className="login-left-center">
+          <div className="login-card">
 
-          <p className="login-tagline">
-            Transformez<br />vos stats en résultats
-          </p>
+            <p className="login-tagline">
+              Transformez<br />vos stats en résultats
+            </p>
 
-          <h2 className="login-title">Se connecter</h2>
+            <h2 className="login-title">Se connecter</h2>
 
-          {/* Formulaire */}
-          <form onSubmit={handleSubmit} className="login-form">
+            <form onSubmit={handleSubmit} className="login-form">
 
-            <label>Nom d'utilisateur</label>
-            <input
-              type="text"
-              value={usernameInput}
-              onChange={(e) => setUsernameInput(e.target.value)}
-            />
+              <label>Adresse email</label>
+              <input
+                type="text"
+                value={usernameInput}
+                onChange={(e) => setUsernameInput(e.target.value)}
+              />
 
-            <label>Mot de passe</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+              <label>Mot de passe</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
 
-            <button type="submit" className="login-button">
-              Se connecter
-            </button>
+              <button type="submit" className="login-button">
+                Se connecter
+              </button>
 
-            <p className="forgot-password">Mot de passe oublié ?</p>
-          </form>
+              <p className="forgot-password">Mot de passe oublié ?</p>
+            </form>
+          </div>
         </div>
+
       </div>
 
-      {/* Colonne droite */}
       <div className="login-right">
-
-        {/* Image */}
         <img src={heroImage} alt="Sport runners" />
 
-        {/* Texte bas */}
         <div className="login-bottom-box">
           Analysez vos performances en un clin d’œil,<br />
           suivez vos progrès et atteignez vos objectifs.

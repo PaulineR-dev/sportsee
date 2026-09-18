@@ -26,7 +26,7 @@ export default function Header() {
       <nav className="header-nav">
 
         {/* Lien dashboard */}
-        <button onClick={() => navigate(`/user/${userId}/dashboard`)}>
+        <button onClick={() => navigate(`/user/dashboard`)}>
           Dashboard
         </button>
 

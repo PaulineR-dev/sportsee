@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { getUserInfo, getUserActivity } from "../services/api.js";
 
@@ -34,11 +34,8 @@ function formatGender(gender) {
 }
 
 export default function Profile() {
-  // Récupération du token + userId
-  const { token, userId } = useContext(AuthContext);
-
-  // ID dans l’URL
-  const { id } = useParams();
+  // Récupération du token
+  const { token } = useContext(AuthContext);
 
   // Navigation
   const navigate = useNavigate();
@@ -54,12 +51,6 @@ export default function Profile() {
     // Si pas de token : retour accueil
     if (!token) {
       navigate("/");
-      return;
-    }
-
-    // Si l’ID ne correspond pas : redirection vers son propre profil
-    if (id !== userId) {
-      navigate(`/user/${userId}/profile`);
       return;
     }
 
@@ -111,7 +102,7 @@ export default function Profile() {
     }
 
     fetchProfile();
-  }, [token, id, userId, navigate]);
+  }, [token, navigate]);
 
   // États de chargement/erreur
   if (loading) return <p>Chargement du profil...</p>;

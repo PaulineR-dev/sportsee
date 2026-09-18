@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 
 import { 
@@ -64,10 +64,7 @@ function getCurrentWeekBounds() {
 
 export default function Dashboard() {
   // Auth
-  const { token, userId } = useContext(AuthContext);
-
-  // URL
-  const { id } = useParams();
+  const { token } = useContext(AuthContext);
 
   // Navigation
   const navigate = useNavigate();
@@ -92,12 +89,6 @@ export default function Dashboard() {
     // Pas de token : retour login
     if (!token) {
       navigate("/");
-      return;
-    }
-
-    // Mauvais ID : redirection vers son dashboard
-    if (id !== userId) {
-      navigate(`/user/${userId}/dashboard`);
       return;
     }
 
@@ -148,7 +139,7 @@ export default function Dashboard() {
     }
 
     fetchDashboard();
-  }, [token, id, userId, navigate]);
+  }, [token, navigate]);
 
   // États de chargement/erreur
   if (loading) return <p>Chargement du dashboard...</p>;

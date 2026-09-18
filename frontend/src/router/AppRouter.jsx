@@ -25,7 +25,7 @@ export default function AppRouter() {
 
         {/* Dashboard (protégé) */}
         <Route
-          path="/user/:id/dashboard"
+          path="/user/dashboard"
           element={
             <PrivateRoute>
               <Dashboard />
