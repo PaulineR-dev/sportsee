@@ -7,12 +7,9 @@ export default function ErrorPage() {
 
   return (
     <>
-      {/* Bloc principal */}
       <section style={{ padding: "40px", textAlign: "center" }}>
         <h1>Erreur 404</h1>
         <p>Cette page n'existe pas.</p>
-
-        {/* Bouton retour */}
         <button
           onClick={() => navigate("/")}
           style={{
@@ -30,7 +27,6 @@ export default function ErrorPage() {
         </button>
       </section>
 
-      {/* Footer */}
       <Footer />
     </>
   );

@@ -13,20 +13,25 @@ export default function HeartRateChart({ data }) {
 
   console.log("HEART RATE DATA =", data);
 
+  // Sécurité : si aucune donnée → message
   if (!data || !Array.isArray(data) || data.length === 0) {
     return <p>Aucune donnée de fréquence cardiaque disponible.</p>;
   }
 
+  // État : savoir si la ligne moyenne est survolée (hover)
   const [isHoveringLine, setIsHoveringLine] = useState(false);
 
+  // Fenêtre glissante : 7 jours visibles
   const windowSize = 7;
   const [windowStart, setWindowStart] = useState(
     Math.max(data.length - windowSize, 0)
   );
   const windowEnd = windowStart + windowSize;
 
+  // Données visibles
   const visibleData = data.slice(windowStart, windowEnd);
 
+  // Formatage des dates (JJ MMM)
   function formatDate(dateStr) {
     const d = new Date(dateStr);
     if (isNaN(d)) return "—";
@@ -39,6 +44,7 @@ export default function HeartRateChart({ data }) {
   const periodStart = formatDate(visibleData[0]?.day);
   const periodEnd = formatDate(visibleData[visibleData.length - 1]?.day);
 
+  // Période affichée
   const formattedData = visibleData.map((d) => {
     const dateObj = new Date(d.day);
     const label = dateObj.toLocaleDateString("fr-FR", { weekday: "short" });
@@ -48,12 +54,14 @@ export default function HeartRateChart({ data }) {
     };
   });
 
+  // Moyenne BPM calculée sur les 7 jours visibles
   const averageBPM = useMemo(() => {
     return Math.round(
       visibleData.reduce((sum, d) => sum + d.avg, 0) / visibleData.length
     );
   }, [visibleData]);
 
+  // Calcul des bornes Y dynamiques
   const rawMax = Math.max(...visibleData.map((d) => d.max));
   const rawMin = Math.min(...visibleData.map((d) => d.min));
 
@@ -61,6 +69,7 @@ export default function HeartRateChart({ data }) {
   const tickBas = rawMin < 130 ? rawMin - 2 : 130;
   const ticks = [tickBas, 145, 160, yMax];
 
+  // Navigation
   const canGoPrev = windowStart > 0;
   const canGoNext = windowEnd < data.length;
 

@@ -1,9 +1,8 @@
 const API_URL = "http://localhost:8000/api";
 
 // --- LOGIN ---
-// Envoie le username + password au backend pour obtenir un token.
-// Si les identifiants sont mauvais : erreur.
-// Si OK : renvoie le JSON contenant le token.
+// Envoie username + password → reçoit un token.
+// Si mauvais identifiants → erreur.
 export async function loginUser(username, password) {
   const response = await fetch(`${API_URL}/login`, {
     method: "POST",
@@ -16,10 +15,9 @@ export async function loginUser(username, password) {
 }
 
 // --- USER INFO ---
-// Récupère les infos du user (profil, statistiques, objectif hebdomadaire).
-// Nécessite le token dans le header Authorization.
-// Si le backend renvoie une erreur : throw.
-// Sinon : renvoie un objet propre avec les 3 blocs utiles.
+// Récupère profil + statistiques + objectif hebdo.
+// Token obligatoire dans Authorization.
+// Renvoie un objet propre avec les infos utiles.
 export async function getUserInfo(token) {
   const response = await fetch(`${API_URL}/user-info`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -37,10 +35,9 @@ export async function getUserInfo(token) {
 }
 
 // --- USER ACTIVITY ---
-// Récupère l’activité du user sur une période (startWeek → endWeek).
-// Le token est obligatoire.
-// Si erreur : throw.
-// Sinon : renvoie la liste des activités (sessions).
+// Récupère les sessions entre startWeek → endWeek.
+// Token obligatoire.
+// Renvoie la liste des activités.
 export async function getUserActivity(token, startWeek, endWeek) {
   const response = await fetch(
     `${API_URL}/user-activity?startWeek=${startWeek}&endWeek=${endWeek}`,

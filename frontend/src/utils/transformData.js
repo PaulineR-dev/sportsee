@@ -4,7 +4,6 @@
 export function buildWeeklyDistance(sessions) {
   if (!sessions) return [];
 
-  // Normalisation tableau
   const sessionArray = Array.isArray(sessions)
     ? sessions
     : Object.values(sessions);
@@ -17,9 +16,10 @@ export function buildWeeklyDistance(sessions) {
   sessionArray.forEach((s) => {
     const d = new Date(s.date);
 
-    const dayNum = (d.getDay() + 6) % 7; // Trouver le lundi
+    const dayNum = (d.getDay() + 6) % 7; // Trouver le lundi de la semaine
     d.setDate(d.getDate() - dayNum + 3);
 
+    // Calcule le numéro de semaine ISO
     const weekYear = d.getFullYear();
     const week1 = new Date(weekYear, 0, 4);
 
@@ -46,6 +46,7 @@ export function buildWeeklyDistance(sessions) {
     weeks[key].dates.push(s.date);
   });
 
+  // Ajoute la semaine actuelle si vide
   const today = new Date();
   const isoToday = new Date(today);
 
@@ -85,10 +86,7 @@ export function buildWeeklyDistance(sessions) {
   }));
 }
 
-
-// -------------------------------------------------------------
-// Fréquence cardiaque (pour le graphique)
-// -------------------------------------------------------------
+// Fréquence cardiaque → extrait min / max / moyenne
 export function buildHeartRate(sessions) {
   if (!sessions) return [];
 
@@ -101,10 +99,7 @@ export function buildHeartRate(sessions) {
   }));
 }
 
-
-// -------------------------------------------------------------
 // Statistiques de la semaine actuelle
-// -------------------------------------------------------------
 export function buildWeeklyStats(statistics, sessions) {
   // Si pas de statistiques
   if (!statistics) {
@@ -130,7 +125,7 @@ export function buildWeeklyStats(statistics, sessions) {
     };
   }
 
-  // Lundi de la semaine
+  // Lundi → dimanche de la semaine actuelle
   const today = new Date();
   const dayNum = (today.getDay() + 6) % 7;
   const monday = new Date(today);
@@ -152,7 +147,6 @@ export function buildWeeklyStats(statistics, sessions) {
   const totalDistance = weekSessions.reduce((sum, s) => sum + s.distance, 0);
   const totalDuration = weekSessions.reduce((sum, s) => sum + s.duration, 0);
 
-  // Retour formaté
   return {
     weeklyGoal: statistics.weeklyGoal ?? null,
     runsCompleted,

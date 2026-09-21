@@ -1,6 +1,5 @@
 import { createContext, useState } from "react";
 
-// Contexte global pour l’authentification
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
@@ -25,7 +24,6 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("userId");
   };
 
-  // Rend le contexte d’authentification accessible à toute l’application
   return (
     <AuthContext.Provider value={{ token, userId, login, logout }}>
       {children}

@@ -132,10 +132,8 @@ export default function Profile() {
 
       <section className="profile-container">
 
-        {/* Colonne gauche */}
         <div className="profile-left">
 
-          {/* Avatar + nom */}
           <div className="profile-header">
             <div className="profile-avatar">
               <img
@@ -152,7 +150,6 @@ export default function Profile() {
             </div>
           </div>
 
-          {/* Infos personnelles */}
           <div className="profile-info">
             <h2>Votre profil</h2>
             <div className="profile-info-divider"></div>
@@ -161,12 +158,11 @@ export default function Profile() {
               <li>Âge : {profile.age}</li>
               <li>Genre : {formatGender(profile.gender)}</li>
               <li>Taille : {formatHeight(profile.height)}</li>
-              <li>Poids : {profile.weight} kg</li>
+              <li>Poids : {profile.weight}kg</li>
             </ul>
           </div>
         </div>
 
-        {/* Colonne droite : statistiques */}
         <div className="profile-right">
           <h2>Vos statistiques</h2>
 
@@ -176,7 +172,6 @@ export default function Profile() {
 
           <div className="stats-grid-blue">
 
-            {/* Temps total */}
             <div className="blue-card">
               <span className="blue-label">Temps total couru</span>
               <span className="blue-value">
@@ -188,7 +183,6 @@ export default function Profile() {
               </span>
             </div>
 
-            {/* Calories */}
             <div className="blue-card">
               <span className="blue-label">Calories brûlées</span>
               <span className="blue-value">
@@ -197,7 +191,6 @@ export default function Profile() {
               </span>
             </div>
 
-            {/* Distance */}
             <div className="blue-card">
               <span className="blue-label">Distance totale parcourue</span>
               <span className="blue-value">
@@ -206,7 +199,6 @@ export default function Profile() {
               </span>
             </div>
 
-            {/* Jours de repos */}
             <div className="blue-card">
               <span className="blue-label">Jours de repos</span>
               <span className="blue-value">
@@ -215,7 +207,6 @@ export default function Profile() {
               </span>
             </div>
 
-            {/* Sessions */}
             <div className="blue-card">
               <span className="blue-label">Nombre de sessions</span>
               <span className="blue-value">

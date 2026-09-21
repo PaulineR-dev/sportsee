@@ -10,6 +10,8 @@ import {
 
 import { useState, useMemo } from "react";
 
+// Composant interne : RoundedBar
+// Permet d'avoir des barres arrondies (rx/ry = 10)
 const RoundedBar = (props) => {
   const { x, y, width, height, fill } = props;
   return (
@@ -27,10 +29,12 @@ const RoundedBar = (props) => {
 
 export default function WeeklyDistanceChart({ data }) {
 
+  // Sécurité : si aucune donnée → message
   if (!data || !Array.isArray(data) || data.length === 0) {
     return <p>Aucune donnée de distance disponible.</p>;
   }
 
+  // Fenêtre glissante : 4 semaines visibles
   const windowSize = 4;
 
   const [windowStart, setWindowStart] = useState(
@@ -39,8 +43,10 @@ export default function WeeklyDistanceChart({ data }) {
 
   const windowEnd = windowStart + windowSize;
 
+  // Données visibles
   const visibleData = data.slice(windowStart, windowEnd);
 
+  // Navigation
   const handlePrev = () => {
     setWindowStart((prev) => Math.max(prev - 1, 0));
   };
@@ -54,10 +60,12 @@ export default function WeeklyDistanceChart({ data }) {
   const canGoPrev = windowStart > 0;
   const canGoNext = windowStart < data.length - windowSize;
 
+  // Moyenne des km sur les 4 semaines visibles
   const averageKm = useMemo(() => {
     return visibleData.reduce((sum, d) => sum + d.km, 0) / visibleData.length;
   }, [visibleData]);
 
+  // Calcul des bornes de semaine (lundi → dimanche)
   function getWeekBounds(dateStr) {
     const d = new Date(dateStr);
     const dayNum = (d.getDay() + 6) % 7;
@@ -68,6 +76,7 @@ export default function WeeklyDistanceChart({ data }) {
     return { start: monday, end: sunday };
   }
 
+  // Format date (JJ MMM)
   function formatDate(date) {
     return date.toLocaleDateString("fr-FR", {
       day: "numeric",
@@ -75,6 +84,7 @@ export default function WeeklyDistanceChart({ data }) {
     });
   }
 
+  // Format date tooltip (JJ.MM)
   function formatTooltipDate(date) {
     return date
       .toLocaleDateString("fr-FR", {
@@ -85,6 +95,7 @@ export default function WeeklyDistanceChart({ data }) {
       .replace("/", ".");
   }
 
+  // Période affichée
   const firstWeekBounds = getWeekBounds(visibleData[0].date);
   const lastWeekBounds = getWeekBounds(
     visibleData[visibleData.length - 1].date
@@ -93,6 +104,7 @@ export default function WeeklyDistanceChart({ data }) {
   const periodStart = formatDate(firstWeekBounds.start);
   const periodEnd = formatDate(lastWeekBounds.end);
 
+// Calcul dynamique des ticks Y
 const rawMax = Math.max(...visibleData.map((d) => d.km));
 const maxRounded = Math.ceil(rawMax / 5) * 5;
 
@@ -108,6 +120,7 @@ if (rawMax < 5) {
   ticks = [0, tick2, tick3, maxRounded];
 }
 
+  // Tooltip personnalisé (période + km)
   function CustomTooltip({ active, payload, coordinate }) {
     if (!active || !payload || !payload.length) return null;
 
@@ -203,7 +216,7 @@ if (rawMax < 5) {
             whiteSpace: "nowrap"
           }}
         >
-          {Math.round(averageKm)} km en moyenne
+          {Math.round(averageKm)}km en moyenne
         </h2>
 
         <div

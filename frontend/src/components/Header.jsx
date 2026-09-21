@@ -13,7 +13,6 @@ export default function Header() {
   return (
     <header className="header">
 
-      {/* Logo */}
       <div className="header-left">
         <img
           src={logo}
@@ -22,23 +21,18 @@ export default function Header() {
         />
       </div>
 
-      {/* Navigation */}
       <nav className="header-nav">
 
-        {/* Lien dashboard */}
         <button onClick={() => navigate(`/user/dashboard`)}>
           Dashboard
         </button>
 
-        {/* Lien profil */}
         <button onClick={() => navigate(`/user/${userId}`)}>
           Mon profil
         </button>
 
-        {/* Séparateur */}
         <div className="header-separator"></div>
 
-        {/* Déconnexion */}
         <button
           id="logout-btn"
           onClick={() => {

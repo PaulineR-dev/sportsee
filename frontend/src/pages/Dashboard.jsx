@@ -23,7 +23,7 @@ import outline from "../assets/outline.png";
 
 import "../styles/Dashboard.css";
 
-// Format date FR
+// Formatage date FR
 function formatDateFR(date) {
   return date.toLocaleDateString("fr-FR", {
     day: "2-digit",
@@ -32,7 +32,7 @@ function formatDateFR(date) {
   });
 }
 
-// Format date pour le header
+// Formatage date pour le header (JJ mois AAAA)
 function formatMemberDate(dateString) {
   const date = new Date(dateString);
   return date.toLocaleDateString("fr-FR", {
@@ -63,13 +63,13 @@ function getCurrentWeekBounds() {
 }
 
 export default function Dashboard() {
-  // Auth
+  // Authentification : récupération du token
   const { token } = useContext(AuthContext);
 
   // Navigation
   const navigate = useNavigate();
 
-  // États
+  // États globaux du dashboard
   const [profile, setProfile] = useState(null);
   const [statistics, setStatistics] = useState(null);
   const [sessions, setSessions] = useState(null);
@@ -82,6 +82,7 @@ export default function Dashboard() {
 
   const [loading, setLoading] = useState(true);
 
+  // Semaine actuelle
   const { monday, sunday } = getCurrentWeekBounds();
 
   useEffect(() => {
@@ -92,10 +93,10 @@ export default function Dashboard() {
       return;
     }
 
-    // Chargement du dashboard
+    // Fonction principale de chargement du dashboard
     async function fetchDashboard() {
       try {
-        // Infos user
+        // Infos user (profil + statistiques globales)
         const userInfo = await getUserInfo(token);
 
         setProfile(userInfo.profile);
@@ -108,7 +109,8 @@ export default function Dashboard() {
         const activityData = await getUserActivity(token, startDate, endDate);
         setSessions(activityData);
 
-        // Graphique distance
+        // Construction des données pour les graphiques
+        // Distance hebdomadaire
         const dist = buildWeeklyDistance(activityData);
         setWeeklyDistance(dist);
 

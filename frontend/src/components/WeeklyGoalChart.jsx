@@ -8,13 +8,13 @@ const COLORS = {
 
 export default function WeeklyGoalChart({ weeklyStats }) {
 
-  // Si pas de données
+  // Sécurité : si aucune donnée → message
   if (!weeklyStats) return <p>Aucune donnée d'objectif disponible.</p>;
 
-  // Valeurs objectif
-  const completed = weeklyStats.runsCompleted ?? 0;
-  const goal = weeklyStats.weeklyGoal ?? 0;
-  const remaining = Math.max(goal - completed, 0);
+  // Extraction des valeurs
+  const completed = weeklyStats.runsCompleted ?? 0; // séances réalisées
+  const goal = weeklyStats.weeklyGoal ?? 0; // objectif total
+  const remaining = Math.max(goal - completed, 0); // séances restantes
 
   // Données du donut
   const data = [
@@ -96,10 +96,10 @@ export default function WeeklyGoalChart({ weeklyStats }) {
           style={{
             position: "absolute",
             top: "37px",
-            right: "56px",
+            right: "64px",
             display: "flex",
             alignItems: "center",
-            gap: "6px",
+            gap: "3.27px",
             lineHeight: "48px"
           }}
         >
@@ -121,7 +121,7 @@ export default function WeeklyGoalChart({ weeklyStats }) {
               color: "#707070"
             }}
           >
-            {remaining} restantes
+            {remaining} {remaining === 1 ? "restante" : "restantes"}
           </span>
         </div>
 
@@ -164,7 +164,7 @@ export default function WeeklyGoalChart({ weeklyStats }) {
             left: "47px",
             display: "flex",
             alignItems: "center",
-            gap: "6px"
+            gap: "3.27px"
           }}
         >
           <div
@@ -185,7 +185,7 @@ export default function WeeklyGoalChart({ weeklyStats }) {
               color: "#707070"
             }}
           >
-            {completed} réalisées
+            {completed} {completed === 1 ? "réalisée" : "réalisées"}
           </span>
         </div>
       </div>
