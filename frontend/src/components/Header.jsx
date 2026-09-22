@@ -37,6 +37,7 @@ export default function Header() {
           id="logout-btn"
           onClick={() => {
             localStorage.removeItem("token");
+            localStorage.removeItem("userId");
             navigate("/");
           }}
         >
