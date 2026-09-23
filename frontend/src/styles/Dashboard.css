@@ -413,63 +413,86 @@
   color: #0B23F4;
 }
 
+
 /* --- RESPONSIVE POUR 1024px --- */
 @media (max-width: 1024px) {
 
-  .dashboard-top {
-    flex-wrap: wrap;
-    height: auto;
-    justify-content: center;
-    padding-bottom: 40px;
+  .dashboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .dashboard-perf-title{
-    padding-left: 40px;
+  .dashboard-top {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    padding-bottom: 40px;
+    gap: 40px;
   }
+
   .dashboard-top-left {
     margin-left: 0;
+    margin-top: 20px;
     justify-content: center;
   }
 
   .dashboard-top-right {
-    justify-content: center;
     margin-right: 0;
+    justify-content: center;
   }
 
-  .dashboard-top-right-box {
-    margin-right: 0;
+  .dashboard-perf {
+    width: 100%;
+    max-width: 1052px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .dashboard-perf-charts {
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
   }
 
-  .dashboard-perf-block-1,
-  .dashboard-perf-block-2 {
-    width: 50%;
-    max-width: none;
+  .dashboard-perf-block-1 {
+    width: 445px;
+    height: 484px;
   }
 
-  /* Section objectif hebdomadaire */
   .dashboard-goal {
     width: 100%;
-    max-width: none;
+    max-width: 1052px;
   }
 
-  /* Section cette semaine */
   .week-summary {
     width: 100%;
-    max-width: none;
+    max-width: 1052px;
   }
 
   .week-summary-content {
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .week-summary-left {
+    width: auto;
+  }
+
+  .week-summary-right {
+    width: auto;
   }
 
   .week-box {
+    width: 572px;
+  }
+
+  .week-summary-title,
+  .week-summary-dates {
+    text-align: center;
     width: 100%;
-    max-width: none;
   }
 }
