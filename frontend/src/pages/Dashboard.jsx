@@ -2,10 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 
-import { 
-  getUserInfo,
-  getUserActivity
-} from "../services/api.js";
+import { dataSource } from "../services/dataSource.js";
 
 import WeeklyDistanceChart from "../components/WeeklyDistanceChart.jsx";
 import HeartRateChart from "../components/HeartRateChart.jsx";
@@ -89,7 +86,7 @@ export default function Dashboard() {
 
     async function fetchDashboard() {
       try {
-        const userInfo = await getUserInfo(token);
+        const userInfo = await dataSource.getUserInfo(token);
 
         setProfile(userInfo.profile);
         setStatistics(userInfo.statistics);
@@ -97,7 +94,7 @@ export default function Dashboard() {
         const startDate = userInfo.profile.createdAt;
         const endDate = new Date().toISOString().split("T")[0];
 
-        const activityData = await getUserActivity(token, startDate, endDate);
+        const activityData = await dataSource.getUserActivity(token, startDate, endDate);
         setSessions(activityData);
 
         const dist = buildWeeklyDistance(activityData);

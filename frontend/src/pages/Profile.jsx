@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
-import { getUserInfo, getUserActivity } from "../services/api.js";
+
+import { dataSource } from "../services/dataSource.js";
 
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
@@ -48,13 +49,13 @@ export default function Profile() {
 
     async function fetchProfile() {
       try {
-        const data = await getUserInfo(token);
+        const data = await dataSource.getUserInfo(token);
         const userProfile = data.profile;
 
         const startDate = userProfile.createdAt;
         const endDate = new Date().toISOString().split("T")[0];
 
-        const activityData = await getUserActivity(token, startDate, endDate);
+        const activityData = await dataSource.getUserActivity(token, startDate, endDate);
 
         const totalDuration = activityData.reduce((sum, s) => sum + (s.duration || 0), 0);
         const totalDistance = activityData.reduce((sum, s) => sum + (s.distance || 0), 0);

@@ -1,7 +1,9 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
-import { loginUser } from "../services/api.js";
+
+import { dataSource } from "../services/dataSource.js";
+
 import "../styles/login.css";
 import heroImage from "../assets/login-hero.png";
 import logo from "../assets/logo.png";
@@ -18,7 +20,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const data = await loginUser(usernameInput, password);
+      const data = await dataSource.loginUser(usernameInput, password);
       login(data.token, data.userId);
       navigate(`/user/dashboard`);
     } catch (error) {
