@@ -4,11 +4,7 @@ import "../styles/header.css";
 
 export default function Header() {
 
-  // Pour naviguer entre les pages
   const navigate = useNavigate();
-
-  // Récupération du userId
-  const userId = localStorage.getItem("userId");
 
   return (
     <header className="header">
@@ -27,7 +23,7 @@ export default function Header() {
           Dashboard
         </button>
 
-        <button onClick={() => navigate(`/user/${userId}`)}>
+        <button onClick={() => navigate(`/user/profile`)}>
           Mon profil
         </button>
 

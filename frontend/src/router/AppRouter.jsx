@@ -15,7 +15,7 @@ export default function AppRouter() {
 
         {/* Profil (protégé) */}
         <Route
-          path="/user/:id"
+          path="/user/profile"
           element={
             <PrivateRoute>
               <Profile />
