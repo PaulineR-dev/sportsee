@@ -8,7 +8,6 @@ import Footer from "../components/Footer.jsx";
 
 import "../styles/Profile.css";
 
-// Formatage de la date "membre depuis"
 function formatMemberDate(dateString) {
   const date = new Date(dateString);
   return date.toLocaleDateString("fr-FR", {
@@ -18,7 +17,6 @@ function formatMemberDate(dateString) {
   });
 }
 
-// Formatage de la taille
 function formatHeight(heightCm) {
   if (!heightCm || heightCm < 100) return `${heightCm} cm`;
   const meters = Math.floor(heightCm / 100);
@@ -26,7 +24,6 @@ function formatHeight(heightCm) {
   return `${meters}m${centimeters}`;
 }
 
-// Formatage du genre
 function formatGender(gender) {
   if (gender === "female") return "Femme";
   if (gender === "male") return "Homme";
@@ -34,55 +31,42 @@ function formatGender(gender) {
 }
 
 export default function Profile() {
-  // Récupération du token
   const { token } = useContext(AuthContext);
-
-  // Navigation
   const navigate = useNavigate();
 
-  // États du profil + statistiques
   const [profile, setProfile] = useState(null);
   const [statistics, setStatistics] = useState(null);
 
-  // Chargement
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Si pas de token : retour accueil
     if (!token) {
       navigate("/");
       return;
     }
 
-    // Chargement du profil + activité
     async function fetchProfile() {
       try {
         const data = await getUserInfo(token);
-
         const userProfile = data.profile;
 
-        // Période : depuis inscription jusqu'à aujourd’hui
         const startDate = userProfile.createdAt;
         const endDate = new Date().toISOString().split("T")[0];
 
-        // Activité filtrée
         const activityData = await getUserActivity(token, startDate, endDate);
 
-        // Calculs des statistiques globales
         const totalDuration = activityData.reduce((sum, s) => sum + (s.duration || 0), 0);
         const totalDistance = activityData.reduce((sum, s) => sum + (s.distance || 0), 0);
         const totalCalories = activityData.reduce((sum, s) => sum + (s.caloriesBurned || 0), 0);
 
-        // Nombre de jours où il y a eu au moins une session
         const uniqueRunDays = new Set(activityData.map(s => s.date)).size;
 
-        // Objectif hebdomadaire
         const weeklyGoal =
           data.statistics?.weeklyGoal ??
           data.weeklyGoal ??
           0;
 
-        // Mise à jour des états
         setProfile(userProfile);
 
         setStatistics({
@@ -94,8 +78,8 @@ export default function Profile() {
           weeklyGoal
         });
 
-      } catch (error) {
-        console.error("Erreur profil :", error);
+      } catch (err) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -104,26 +88,22 @@ export default function Profile() {
     fetchProfile();
   }, [token, navigate]);
 
-  // États de chargement/erreur
   if (loading) return <p>Chargement du profil...</p>;
+  if (error) return <p>{error}</p>;
   if (!profile || !statistics) return <p>Impossible de charger le profil.</p>;
 
-  // Calculs durée
   const totalDuration = statistics.totalDuration ?? 0;
   const hours = Math.floor(totalDuration / 60);
   const minutes = totalDuration % 60;
 
-  // Autres statistiques
   const totalCalories = statistics.totalCalories ?? 0;
   const totalKm = statistics.totalDistance ?? 0;
   const totalSessions = statistics.totalSessions ?? 0;
 
-  // Calcul des jours depuis inscription
   const createdAtDate = new Date(profile.createdAt);
   const today = new Date();
   const totalDays = Math.floor((today - createdAtDate) / (1000 * 60 * 60 * 24));
 
-  // Jours de repos = jours totaux - jours où il y a eu une session
   const restDays = totalDays - (statistics.uniqueRunDays ?? 0);
 
   return (

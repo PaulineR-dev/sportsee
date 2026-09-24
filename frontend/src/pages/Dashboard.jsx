@@ -63,13 +63,9 @@ function getCurrentWeekBounds() {
 }
 
 export default function Dashboard() {
-  // Authentification : récupération du token
   const { token } = useContext(AuthContext);
-
-  // Navigation
   const navigate = useNavigate();
 
-  // États globaux du dashboard
   const [profile, setProfile] = useState(null);
   const [statistics, setStatistics] = useState(null);
   const [sessions, setSessions] = useState(null);
@@ -81,47 +77,37 @@ export default function Dashboard() {
   const [totalDistanceFromStart, setTotalDistanceFromStart] = useState(0);
 
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Semaine actuelle
   const { monday, sunday } = getCurrentWeekBounds();
 
   useEffect(() => {
-
-    // Pas de token : retour login
     if (!token) {
       navigate("/");
       return;
     }
 
-    // Fonction principale de chargement du dashboard
     async function fetchDashboard() {
       try {
-        // Infos user (profil + statistiques globales)
         const userInfo = await getUserInfo(token);
 
         setProfile(userInfo.profile);
         setStatistics(userInfo.statistics);
 
-        // Activité depuis inscription jusqu'à aujourd’hui
         const startDate = userInfo.profile.createdAt;
         const endDate = new Date().toISOString().split("T")[0];
 
         const activityData = await getUserActivity(token, startDate, endDate);
         setSessions(activityData);
 
-        // Construction des données pour les graphiques
-        // Distance hebdomadaire
         const dist = buildWeeklyDistance(activityData);
         setWeeklyDistance(dist);
 
-        // Graphique fréquence cardiaque
         const hr = buildHeartRate(activityData);
         setHeartRate(hr);
 
-        // Objectif hebdomadaire
         const resolvedGoal = userInfo.weeklyGoal ?? 0;
 
-        // Statistiques hebdomadaires
         const stats = buildWeeklyStats(
           { weeklyGoal: resolvedGoal },
           activityData
@@ -129,12 +115,11 @@ export default function Dashboard() {
 
         setWeeklyStats(stats);
 
-        // Distance totale depuis inscription
         const totalDistance = computeTotalDistanceFromSessions(activityData);
         setTotalDistanceFromStart(totalDistance);
 
-      } catch (error) {
-        console.log("Erreur lors du chargement du dashboard :", error);
+      } catch (err) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -143,8 +128,9 @@ export default function Dashboard() {
     fetchDashboard();
   }, [token, navigate]);
 
-  // États de chargement/erreur
+  // États de chargement / erreur
   if (loading) return <p>Chargement du dashboard...</p>;
+  if (error) return <p>{error}</p>;
   if (!profile || !statistics || !sessions) {
     return <p>Impossible de charger les données.</p>;
   }
@@ -155,10 +141,8 @@ export default function Dashboard() {
 
       <section className="dashboard">
 
-        {/* Haut du dashboard */}
         <div className="dashboard-top">
 
-          {/* Profil */}
           <div className="dashboard-top-left">
             <div className="dashboard-profile-pic">
               <img
@@ -173,7 +157,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Distance totale */}
           <div className="dashboard-top-right">
             <span className="dashboard-top-right-label">
               Distance totale parcourue
@@ -187,7 +170,6 @@ export default function Dashboard() {
 
         </div>
 
-        {/* Performances */}
         <div className="dashboard-perf">
 
           <h2 className="dashboard-perf-title">Vos dernières performances</h2>
@@ -204,7 +186,6 @@ export default function Dashboard() {
 
         </div>
 
-        {/* Résumé semaine */}
         <div className="week-summary">
 
           <h2 className="week-summary-title">Cette semaine</h2>
@@ -215,12 +196,10 @@ export default function Dashboard() {
 
           <div className="week-summary-content">
 
-            {/* Objectif hebdomadaire */}
             <div className="week-summary-left">
               <WeeklyGoalChart weeklyStats={weeklyStats} />
             </div>
 
-            {/* Statistiques semaine */}
             <div className="week-summary-right">
 
               <div className="week-box">
